@@ -11,6 +11,7 @@ use League\CommonMark\MarkdownConverter;
 
 class Markdown
 {
+    use FluentApi;
     use ExtensionsCommonMark;
 
     private string $content = '';
@@ -72,26 +73,6 @@ class Markdown
     }
 
     /**
-     * @param  array<mixed> $config [description]
-     */
-    public function config(array $config = []): Markdown
-    {
-        $this->config = $config;
-        return $this;
-    }
-
-    /**
-     * @param  mixed $value
-     */
-    public function modifyConfig(string $configId, $value): Markdown
-    {
-        $c = $this->configuration();
-        $c[$configId] = $value;
-        $this->config = $c;
-        return $this;
-    }
-
-    /**
      * @return array<mixed> [description]
      */
     private function configuration(): array
@@ -106,29 +87,9 @@ class Markdown
         return $this->config;
     }
 
-    public function minified(bool $minified = true): Markdown
-    {
-        $this->minified = $minified;
-        return $this;
-    }
-
     private function shouldBeMinified(): bool
     {
         return $this->minified;
-    }
-
-    public function overwriteExtensions(string ...$extensionClassNames): Markdown
-    {
-        $this->extensions = [];
-        $this->addExtensions(...$extensionClassNames);
-        return $this;
-    }
-
-    public function addExtensions(string ...$extensionClassNames): Markdown
-    {
-        $ext = array_merge($this->extensions(), $extensionClassNames);
-        $this->extensions = array_unique($ext);
-        return $this;
     }
 
     /**

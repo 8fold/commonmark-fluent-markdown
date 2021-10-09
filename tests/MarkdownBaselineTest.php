@@ -2,6 +2,17 @@
 
 use Eightfold\Markdown\Markdown;
 
+test('Markdown respects configured disallowed raw html', function() {
+    expect(
+        Markdown::create(<<<md
+            <div>Hello, World!</div>
+            md
+        )->disallowedRawHtml(['div'])->minified()->convertedContent()
+    )->toBe(<<<html
+        html
+    );
+});
+
 test('Markdown can use description lists', function() {
     expect(
         Markdown::create(<<<md
