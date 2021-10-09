@@ -7,14 +7,25 @@ namespace Eightfold\Markdown;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
-// use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
-// use League\CommonMark\Extension\SmartPunct\SmartPunctExtension;
-// use League\CommonMark\Extension\Strikethrough\StrikethroughExtension;
 use League\CommonMark\MarkdownConverter;
 
 class Markdown
 {
+    use ExtensionsCommonMark;
+
     private string $content = '';
+
+    private bool $minified = false;
+
+    /**
+     * @var array<mixed>
+     */
+    private array $config = [];
+
+    /**
+     * @var array<string>
+     */
+    private array $extensions = [];
 
     public static function create(string $content = ''): Markdown
     {
@@ -33,15 +44,98 @@ class Markdown
 
     public function convertToHtml(): RenderedContentInterface
     {
-        $environment = new Environment();
+        $environment = new Environment($this->configuration());
         $environment->addExtension(new CommonMarkCoreExtension());
 
-        $converter   = new MarkdownConverter($environment);
+        foreach ($this->extensions() as $extensionClass) {
+            $environment->addExtension(new $extensionClass());
+        }
+
+        $converter = new MarkdownConverter($environment);
         return $converter->convertToHtml($this->content());
     }
 
     public function convertedContent(): string
     {
-        return $this->convertToHtml()->getContent();
+        $html = $this->convertToHtml()->getContent();
+
+        if ($this->shouldBeMinified()) {
+            return str_replace([
+                "\t",
+                "\n",
+                "\r",
+                "\r\n"
+            ], '', $html);
+
+        }
+        return $html;
+    }
+
+    /**
+     * @param  array<mixed> $config [description]
+     */
+    public function config(array $config = []): Markdown
+    {
+        $this->config = $config;
+        return $this;
+    }
+
+    /**
+     * @param  mixed $value
+     */
+    public function modifyConfig(string $configId, $value): Markdown
+    {
+        $c = $this->configuration();
+        $c[$configId] = $value;
+        $this->config = $c;
+        return $this;
+    }
+
+    /**
+     * @return array<mixed> [description]
+     */
+    private function configuration(): array
+    {
+        if (empty($this->config)) {
+            $this->config = [
+                'html_input' => 'strip',
+                'allow_unsafe_links' => false,
+                'max_nesting_level' => 50
+            ];
+        }
+        return $this->config;
+    }
+
+    public function minified(bool $minified = true): Markdown
+    {
+        $this->minified = $minified;
+        return $this;
+    }
+
+    private function shouldBeMinified(): bool
+    {
+        return $this->minified;
+    }
+
+    public function overwriteExtensions(string ...$extensionClassNames): Markdown
+    {
+        $this->extensions = [];
+        $this->addExtensions(...$extensionClassNames);
+        return $this;
+    }
+
+    public function addExtensions(string ...$extensionClassNames): Markdown
+    {
+        $ext = array_merge($this->extensions(), $extensionClassNames);
+        $this->extensions = array_unique($ext);
+        return $this;
+    }
+
+    /**
+     * @return array<string> [description]
+     */
+    private function extensions(): array
+    {
+        return $this->extensions;
     }
 }
