@@ -1,8 +1,8 @@
 > Note: Delete the labels in the new repo and use https://github.com/jvandemo/copy-github-labels-cli to copy the ones found here to the new repo
 
-# 8fold {Name of product or project} for {language or framework}
+# 8fold Fluent Markdown for CommonMark
 
-{brief description}
+A fluent API for use with the highly-extensible [CommonMark parser](https://commonmark.thephpleague.com/2.0/) from the league of extraordinary packages.
 
 ## Installation
 
