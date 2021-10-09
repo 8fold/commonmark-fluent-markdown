@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Eightfold\Markdown;
 
 use League\CommonMark\Environment\Environment;
-use League\CommonMark\Output\RenderedContent;
+use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 // use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
 // use League\CommonMark\Extension\SmartPunct\SmartPunctExtension;
@@ -31,7 +31,7 @@ class Markdown
         return $this->content;
     }
 
-    public function convertToHtml(): RenderedContent
+    public function convertToHtml(): RenderedContentInterface
     {
         $environment = new Environment();
         $environment->addExtension(new CommonMarkCoreExtension());
