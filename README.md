@@ -112,7 +112,7 @@ The result:
 ```
 
 If the [extension accepts a configuration](https://commonmark.thephpleague.com/2.0/extensions/disallowed-raw-html/), you can pass it into the method and
-the configruation will be modified accordingly.
+the primary configruation will be modified accordingly.
 
 ```php
 use Eightfold\Markdown\Markdown;
