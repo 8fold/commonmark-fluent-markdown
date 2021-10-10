@@ -6,7 +6,7 @@ We try to put off instantiation and execution until the last possible moment.
 
 ## Installation
 
-{how does one install the product}
+`composer require 8fold/commonmark-fluent-markdown`
 
 ## Usage
 
