@@ -220,4 +220,32 @@ trait ExtensionsCommonMark
 
         return $this;
     }
+
+    public function taskLists(): Markdown
+    {
+        $this->addExtensions(
+            '\League\CommonMark\Extension' .
+            '\TaskList\TaskListExtension'
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param array<mixed> $config [description]
+     */
+    public function smartPunctuation(array $config = []): Markdown
+    {
+        if (count($config) > 0) {
+            $this->modifyConfig('smartpunct', $config);
+
+        }
+
+        $this->addExtensions(
+            '\League\CommonMark\Extension' .
+            '\SmartPunct\SmartPunctExtension'
+        );
+
+        return $this;
+    }
 }

@@ -2,6 +2,22 @@
 
 use Eightfold\Markdown\Markdown;
 
+test('Markdown can use abbreviations', function() {
+    $markdown = <<<md
+    [.8fold](eightfold)
+    md;
+
+    expect(
+        Markdown::create($markdown)
+            ->abbreviations()
+            ->convertedContent()
+    )->toBe(<<<html
+        <p><abbr title="eightfold">8fold</abbr></p>
+
+        html
+    );
+});
+
 test('Markdown uses GFM based on table test', function() {
     $markdown = <<<md
     |col 1 |col 2 |

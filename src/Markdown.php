@@ -14,6 +14,7 @@ class Markdown
 {
     use FluentApi;
     use ExtensionsCommonMark;
+    use ExtensionsEightfold;
 
     private string $content = '';
 

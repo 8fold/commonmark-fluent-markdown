@@ -5,9 +5,10 @@
   "license": "MIT",
   "authors": [],
   "require": {
-    "php": "^7.4||^8.0",
+    "php": "^7.4 || ^8.0",
     "league/commonmark": "^2.0",
-    "symfony/yaml": "^2.3 | ^3.0 | ^4.0 | ^5.0"
+    "symfony/yaml": "^2.3 || ^3.0 || ^4.0 || ^5.0",
+    "8fold/commonmark-abbreviations": "^1.2 || ^2.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.6",
