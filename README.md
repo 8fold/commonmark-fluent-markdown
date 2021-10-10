@@ -12,7 +12,7 @@ composer require 8fold/commonmark-fluent-markdown
 
 ## Usage
 
-Warning: Users of this library are responsible for sanitizing content.
+⚠️ Warning: Users of this library are responsible for sanitizing content.
 
 Write some markdown:
 
@@ -137,7 +137,7 @@ The primary capabilities afforded by the fluent API are:
 - adding or resetting extensions (if not using the fluent API extension methods).
 
 Note: When adding an extension, Fluent Markdown uses the full class name of the
-extension, not an instance of the extension. This is a deviation from they way
+extension, not an instance of the extension. This is a deviation from the way
 CommonMark works, however, it is in keeping with the desire to wait for the
 last possible moment before executing or instantiating.
 
@@ -211,4 +211,5 @@ impact as CommonMark continues to evolve.
 - [Governance](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/GOVERNANCE.md)
 - [Versioning](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/VERSIONING.md)
 - [Security](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/SECURITY.md)
+- [Coding Standards and Style](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/coding-standards-and-styles.md)
 
