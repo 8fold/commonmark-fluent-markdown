@@ -137,7 +137,7 @@ The primary capabilities afforded by the fluent API are:
 Note: When adding an extension, Fluent Markdown uses the full class name of the
 extension, not an instance of the extension. This is a deviation from they way
 CommonMark works, however, it is in keeping with the desire to wait for the
-last possible moment before executing.
+last possible moment before executing or instantiating.
 
 ```php
 use Eightfold\Markdown\Markdown;
