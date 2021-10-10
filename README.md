@@ -134,8 +134,9 @@ The primary capabilities afforded by the fluent API are:
 - adding or modifying a CommonMark-compliant configuration and
 - adding or resetting extensions (if not using the fluent API extension methods).
 
-Note: When add an extension, Fluent Markdown uses the full class name of the
-extension, not an instance of the extension. This is part of the waiting for the
+Note: When adding an extension, Fluent Markdown uses the full class name of the
+extension, not an instance of the extension. This is a deviation from they way
+CommonMark works, however, it is in keeping with the desire to wait for the
 last possible moment before executing.
 
 ```php
