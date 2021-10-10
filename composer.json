@@ -1,9 +1,14 @@
 {
-  "name": "vendor/project",
-  "description": "",
+  "name": "8fold/commonmark-fluent-markdown",
+  "description": "A fluent API for CommonMark by the PHP League",
   "type": "library",
   "license": "MIT",
-  "authors": [],
+  "authors": [
+    {
+      "name": "Josh Bruce",
+      "email": "josh@8fold.pro"
+    }
+  ],
   "require": {
     "php": "^7.4 || ^8.0",
     "league/commonmark": "^2.0",

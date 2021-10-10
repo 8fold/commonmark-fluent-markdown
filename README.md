@@ -1,5 +1,3 @@
-> Note: Delete the labels in the new repo and use https://github.com/jvandemo/copy-github-labels-cli to copy the ones found here to the new repo
-
 # 8fold Fluent Markdown for CommonMark
 
 A fluent API for use with the highly-extensible [CommonMark parser](https://commonmark.thephpleague.com/2.0/) from the league of extraordinary packages.
@@ -103,7 +101,6 @@ print Markdown::create($markdown)
 
 ```html
 <p><del>strikethrough from GitHub Flavored Markdown</del></p>
-
 <p>An <abbr title="abbreviation">abbr</abbr> from 8fold Abbreviations.</p>
 ```
 
