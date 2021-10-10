@@ -88,6 +88,11 @@ class Markdown
         return $html;
     }
 
+    public function __toString(): string
+    {
+        return $this->convertedContent();
+    }
+
     /**
      * @return array<mixed> [description]
      */
