@@ -146,8 +146,8 @@ use Eightfold\Markdown\Markdown;
 
 print Markdown::create($markdown)
   ->addExtensions(
-  	\League\CommonMark\Extension\Mention\MentionExtension::class,
-  	'\Eightfold\CommonMarkAbbreviations\AbbreviationExtension'
+    \League\CommonMark\Extension\Mention\MentionExtension::class,
+    '\Eightfold\CommonMarkAbbreviations\AbbreviationExtension'
   );
 ```
 
