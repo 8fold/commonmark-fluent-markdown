@@ -6,7 +6,9 @@ We try to put off instantiation and execution until the last possible moment.
 
 ## Installation
 
-`composer require 8fold/commonmark-fluent-markdown`
+```bash
+composer require 8fold/commonmark-fluent-markdown
+```
 
 ## Usage
 
