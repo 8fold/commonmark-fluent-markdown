@@ -123,7 +123,7 @@ print Markdown::create($markdown)
   ->disallowedRawHtml(['div']);
 ```
 
-Not passing in a configuration will result in using the default established by
+Not passing in a configuration results in using the default established by
 the CommonMark library.
 
 ### Fluent API
@@ -136,10 +136,7 @@ The primary capabilities afforded by the fluent API are:
 - adding or modifying a CommonMark-compliant configuration and
 - adding or resetting extensions (if not using the fluent API extension methods).
 
-Note: When adding an extension, Fluent Markdown uses the full class name of the
-extension, not an instance of the extension. This is a deviation from the way
-CommonMark works, however, it is in keeping with the desire to wait for the
-last possible moment before executing or instantiating.
+Note: Adding extensins works differently than you would with ComminMark. First, you can add more than one extension at a time. Second, Fluent Markdown takes the full class name, not an instance of the class; in keeping with our desire to be just-in-time and lazy.
 
 ```php
 use Eightfold\Markdown\Markdown;
