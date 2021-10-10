@@ -7,6 +7,7 @@ namespace Eightfold\Markdown;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
 use League\CommonMark\MarkdownConverter;
 
 class Markdown
@@ -38,9 +39,23 @@ class Markdown
         $this->content = $content;
     }
 
+    /**
+     * @return array<mixed> [description]
+     */
+    public function frontMatter(): array
+    {
+        $frontMatterExtension = new FrontMatterExtension();
+        return $frontMatterExtension->getFrontMatterParser()->parse(
+            $this->content
+        )->getFrontMatter();
+    }
+
     public function content(): string
     {
-        return $this->content;
+        $frontMatterExtension = new FrontMatterExtension();
+        return $frontMatterExtension->getFrontMatterParser()->parse(
+            $this->content
+        )->getContent();
     }
 
     public function convertToHtml(): RenderedContentInterface

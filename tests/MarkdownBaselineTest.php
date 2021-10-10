@@ -2,6 +2,32 @@
 
 use Eightfold\Markdown\Markdown;
 
+test('Markdown uses GFM based on table test', function() {
+    $markdown = <<<md
+    |col 1 |col 2 |
+    |:-----|:-----|
+    |1     |      |
+    md;
+
+    expect(
+        Markdown::create($markdown)
+            ->gitHubFlavoredMarkdown()
+            ->minified()->convertedContent()
+    )->toBe(<<<html
+        <table><thead><tr><th align="left">col 1</th><th align="left">col 2</th></tr></thead><tbody><tr><td align="left">1</td><td align="left"></td></tr></tbody></table>
+        html
+    );
+
+    expect(
+        Markdown::create($markdown)
+            ->gfm()
+            ->minified()->convertedContent()
+    )->toBe(<<<html
+        <table><thead><tr><th align="left">col 1</th><th align="left">col 2</th></tr></thead><tbody><tr><td align="left">1</td><td align="left"></td></tr></tbody></table>
+        html
+    );
+});
+
 test('Markdown respects configured disallowed raw html', function() {
     expect(
         Markdown::create(<<<md
@@ -77,6 +103,41 @@ test('Markdown has shorthand extensions', function() {
     );
 });
 
+test('Markdown can always use front matter', function() {
+    $markdown = <<<md
+        ---
+        test: Hello, World!
+        list:
+            - item 1
+            - item 2
+            - item 3
+            - item 4
+        ---
+
+        Stuff and things.
+        md;
+
+    expect(
+        Markdown::create($markdown)->convertedContent()
+    )->toBe(<<<html
+        <p>Stuff and things.</p>
+
+        html
+    );
+
+    expect(
+        Markdown::create($markdown)->frontMatter()
+    )->toBe([
+        'test' => 'Hello, World!',
+        'list' => [
+            'item 1',
+            'item 2',
+            'item 3',
+            'item 4'
+        ]
+    ]);
+});
+
 test('Markdown configured with greater security by default', function() {
     // Max nesting level not tested
     expect(
@@ -112,13 +173,14 @@ test('Markdown configuration can be overridden', function() {
 });
 
 test('Markdown can clear extensions', function() {
-    $content = <<<md
+    $markdown = <<<md
     |col 1 |col 2 |
     |:-----|:-----|
     |1     |      |
     md;
+
     expect(
-        Markdown::create($content)
+        Markdown::create($markdown)
             ->addExtensions(
                 League\CommonMark\Extension\Table\TableExtension::class
             )->overwriteExtensions()->convertedContent()
@@ -132,13 +194,13 @@ test('Markdown can clear extensions', function() {
 });
 
 test('Markdown output can be minified', function() {
-    $content = <<<md
+    $markdown = <<<md
     |col 1 |col 2 |
     |:-----|:-----|
     |1     |      |
     md;
     expect(
-        Markdown::create($content)
+        Markdown::create($markdown)
             ->addExtensions(
                 League\CommonMark\Extension\Table\TableExtension::class
             )->minified()->convertedContent()
@@ -149,13 +211,13 @@ test('Markdown output can be minified', function() {
 });
 
 test('Markdown can add and apply extensions', function() {
-    $content = <<<md
+    $markdown = <<<md
     |col 1 |col 2 |
     |:-----|:-----|
     |1     |      |
     md;
     expect(
-        Markdown::create($content)
+        Markdown::create($markdown)
             ->addExtensions(
                 League\CommonMark\Extension\Table\TableExtension::class
             )->convertedContent()

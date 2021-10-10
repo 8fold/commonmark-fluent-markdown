@@ -111,4 +111,113 @@ trait ExtensionsCommonMark
 
         return $this;
     }
+
+    public function gitHubFlavoredMarkdown(): Markdown
+    {
+        $this->addExtensions(
+            '\League\CommonMark\Extension' .
+            '\GithubFlavoredMarkdownExtension'
+        );
+
+        return $this;
+    }
+
+    public function gfm(): Markdown
+    {
+        return $this->gitHubFlavoredMarkdown();
+    }
+
+    /**
+     * @param array<mixed> $config [description]
+     */
+    public function headingPermalinks(array $config = []): Markdown
+    {
+        if (count($config) > 0) {
+            $this->modifyConfig('heading_permalink', $config);
+
+        }
+
+        $this->addExtensions(
+            '\League\CommonMark\Extension' .
+            '\HeadingPermalink\HeadingPermalinkExtension'
+        );
+
+        return $this;
+    }
+
+    public function inlinesOnly(): Markdown
+    {
+        $this->addExtensions(
+            '\League\CommonMark\Extension' .
+            '\InlinesOnly\InlinesOnlyExtension'
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param array<mixed> $config [description]
+     */
+    public function mentions(array $config = []): Markdown
+    {
+        if (count($config) > 0) {
+            $this->modifyConfig('mentions', $config);
+
+        }
+
+        $this->addExtensions(
+            '\League\CommonMark\Extension' .
+            '\Mention\MentionExtension'
+        );
+
+        return $this;
+    }
+
+    public function strikethroughs(): Markdown
+    {
+        $this->addExtensions(
+            '\League\CommonMark\Extension' .
+            '\Strikethrough\StrikethroughExtension'
+        );
+
+        return $this;
+    }
+
+    public function tables(): Markdown
+    {
+        $this->addExtensions(
+            '\League\CommonMark\Extension' .
+            '\Table\TableExtension'
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param array<mixed> $config
+     * @param array<mixed> $headingPermalinksConfig
+     */
+    public function tableOfContents(
+        array $config = [],
+        array $headingPermalinksConfig = []
+    ): Markdown {
+        if (count($config) > 0) {
+            $this->modifyConfig('table_of_contents', $config);
+
+        }
+
+        $permalinkClassName = '\League\CommonMark\Extension' .
+            '\HeadingPermalink\HeadingPermalinkExtension';
+        if (! in_array($permalinkClassName, $this->extensions())) {
+            $this->headingPermalinks($headingPermalinksConfig);
+
+        }
+
+        $this->addExtensions(
+            '\League\CommonMark\Extension' .
+            '\TableOfContents\TableOfContentsExtension'
+        );
+
+        return $this;
+    }
 }
