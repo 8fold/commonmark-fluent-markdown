@@ -2,6 +2,20 @@
 
 use Eightfold\Markdown\Markdown;
 
+test('Markdown is stringable', function() {
+    $markdown = <<<md
+    [.8fold](eightfold)
+    md;
+
+    expect(
+        (string) Markdown::create($markdown)->abbreviations()
+    )->toBe(<<<html
+        <p><abbr title="eightfold">8fold</abbr></p>
+
+        html
+    );
+});
+
 test('Markdown can use abbreviations', function() {
     $markdown = <<<md
     [.8fold](eightfold)
