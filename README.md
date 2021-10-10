@@ -132,7 +132,7 @@ The non-extension-related fluent API methods can be found in the
 The primary capabilities afforded by the fluent API are:
 
 - adding or modifying a CommonMark-compliant configuration and
-- adding or resetting extensions (if not using the fluen API extension methods).
+- adding or resetting extensions (if not using the fluent API extension methods).
 
 Note: When add an extension, Fluent Markdown uses the full class name of the
 extension, not an instance of the extension. This is part of the waiting for the
