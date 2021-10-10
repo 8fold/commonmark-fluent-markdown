@@ -78,7 +78,7 @@ var_dump($frontMatter);
 ```
 
 The native [CommonMark extension](https://commonmark.thephpleague.com/2.0/extensions/front-matter/)
-is used to accomplish this. However, for the purposses of Fluent Markdown, we do
+is used to accomplish this. However, for the purposes of Fluent Markdown, we do
 not characterize it the same way. This returns metadata, not rendered HTML.
 
 ### Extensions
