@@ -59,10 +59,13 @@ title: Front matter
 Some content.
 ```
 
+Getting the front matter:
+
 ```php
 use Eightfold\Markdown\Markdown;
 
-$frontMatter = Markdown::create($markdown)->frontMatter();
+$frontMatter = Markdown::create($markdown)
+  ->frontMatter();
 
 var_dump($frontMatter);
 
@@ -72,9 +75,9 @@ var_dump($frontMatter);
 // )
 ```
 
-While we use the [CommonMark-native extension](https://commonmark.thephpleague.com/2.0/extensions/front-matter/), for the purposes of Fluent Markdown
-we do not classify this as a strictly extension behavior as it returns something
-other than rendered HTML, unlike the other extensions.
+The native [CommonMark extension](https://commonmark.thephpleague.com/2.0/extensions/front-matter/)
+is used to accomplish this. However, for the purposses of Fluent Markdown, we do
+not characterize it the same way. This returns metadata, not rendered HTML.
 
 ### Extensions
 
