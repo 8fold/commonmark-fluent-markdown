@@ -81,8 +81,8 @@ not characterize it the same way. This returns metadata, not rendered HTML.
 
 ### Extensions
 
-Each internal [extension of the CommonMark package}https://commonmark.thephpleague.com/2.0/extensions/overview/ is available via the fluent
-API alont with [8fold Abbreviations](https://github.com/8fold/commonmark-abbreviations):
+Each internal [CommonMark extension](https://commonmark.thephpleague.com/2.0/extensions/overview/) is available via the fluent API along with
+[8fold Abbreviations](https://github.com/8fold/commonmark-abbreviations):
 
 ```markdown
 ---
@@ -94,6 +94,8 @@ title: Front matter
 An [.abbr](abbreviation) from 8fold Abbreviations.
 ```
 
+Setting the extensions and printing the ressult:
+
 ```php
 use Eightfold\Markdown\Markdown;
 
@@ -101,6 +103,8 @@ print Markdown::create($markdown)
   ->gitHubFlavoredMarkdown()
   ->abbreviations();
 ```
+
+The result:
 
 ```html
 <p><del>strikethrough from GitHub Flavored Markdown</del></p>
