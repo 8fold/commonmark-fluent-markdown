@@ -96,7 +96,7 @@ title: Front matter
 An [.abbr](abbreviation) from 8fold Abbreviations.
 ```
 
-Setting the extensions and printing the ressult:
+Setting the extensions and printing the result:
 
 ```php
 use Eightfold\Markdown\Markdown;
