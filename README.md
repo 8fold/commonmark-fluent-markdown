@@ -50,8 +50,7 @@ Same output as before.
 
 ### YAML front matter
 
-If you are using YAML front matter, you can access it at any time via the
-`frontMatter` method:
+If you are using YAML front matter, you can access it at any time via the `frontMatter` method:
 
 ```markdown
 ---
@@ -113,8 +112,7 @@ The result:
 <p>An <abbr title="abbreviation">abbr</abbr> from 8fold Abbreviations.</p>
 ```
 
-If the [extension accepts a configuration](https://commonmark.thephpleague.com/2.0/extensions/disallowed-raw-html/), you can pass it into the method and
-the primary configruation will be modified accordingly.
+If the [extension accepts a configuration](https://commonmark.thephpleague.com/2.0/extensions/disallowed-raw-html/), you can pass it into the method and the primary configuration will be modified accordingly.
 
 ```php
 use Eightfold\Markdown\Markdown;
@@ -123,8 +121,7 @@ print Markdown::create($markdown)
   ->disallowedRawHtml(['div']);
 ```
 
-Not passing in a configuration results in using the default established by
-the CommonMark library.
+Not passing in a configuration results in using the default established by the CommonMark library.
 
 ### Fluent API
 
@@ -136,7 +133,7 @@ The primary capabilities afforded by the fluent API are:
 - adding or modifying a CommonMark-compliant configuration and
 - adding or resetting extensions (if not using the fluent API extension methods).
 
-Note: Adding extensins works differently than you would with ComminMark. First, you can add more than one extension at a time. Second, Fluent Markdown takes the full class name, not an instance of the class; in keeping with our desire to be just-in-time and lazy.
+Note: Adding extensions works differently than you would with CommonMark. First, you can add more than one extension at a time. Second, Fluent Markdown takes the full class name, not an instance of the class; in keeping with our desire to be just-in-time and lazy.
 
 ```php
 use Eightfold\Markdown\Markdown;
@@ -166,9 +163,7 @@ Output:
 ```
 
 In keeping with 8fold [XML Builder](https://github.com/8fold/php-xml-builder/tree/0.6.0)
-and [HTML Builder](https://github.com/8fold/php-html-builder/tree/0.5.1), which
-render XML and HTML as a flat string, Fluent Markdown provides the `minified`
-method to accomplish the same:
+and [HTML Builder](https://github.com/8fold/php-html-builder/tree/0.5.1), which render XML and HTML as a flat string, Fluent Markdown provides the `minified` method to accomplish the same:
 
 ```php
 use Eightfold\Markdown\Markdown;
@@ -182,24 +177,19 @@ Output:
 <p>Block 1</p><p>Block 2</p>
 ```
 
-For longer documents the removal of tabs and carriage returns can add up to quite
-a bit in the response.
+For longer documents the removal of tabs and carriage returns can add up to quite a bit in the response.
 
 ## Details
 
 This is actually our third foray into wrapping CommonMark.
 
-CommonMark has been a staple in 8fold web development since inception. As we've
-progressed and continued to slowly evolve our own XML and HTML generating packages
-and used those solutions in an array of websites, CommonMark has been featured
-front and center, as it were.
+CommonMark has been a staple in 8fold web development since inception. As we've progressed and continued to slowly evolve our own XML and HTML generating packages
+and used those solutions in an array of websites, CommonMark has been featured front and center, as it were.
 
-Given how much CommonMark is used in our various projects and our desire to be
-loosely coupled with any solutions we don't write ourselves, I think we've
+Given how much CommonMark is used in our various projects and our desire to be loosely coupled with any solutions we don't write ourselves, I think we've
 come to a solution that accomplishes both those missions.
 
-Minimal code to start, configure, and render HTML. A consistent API to reduce
-impact as CommonMark continues to evolve.
+Minimal code to start, configure, and render HTML. A consistent API to reduce impact as CommonMark continues to evolve.
 
 ## Other
 
