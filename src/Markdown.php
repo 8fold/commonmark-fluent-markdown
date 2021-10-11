@@ -59,7 +59,7 @@ class Markdown
         )->getContent();
     }
 
-    public function convertToHtml(): RenderedContentInterface
+    public function convertToHtml(string $content = ''): RenderedContentInterface
     {
         $environment = new Environment($this->configuration());
         $environment->addExtension(new CommonMarkCoreExtension());
@@ -69,12 +69,16 @@ class Markdown
         }
 
         $converter = new MarkdownConverter($environment);
+
+        if (strlen($content) > 0) {
+            return $converter->convertToHtml($content);
+        }
         return $converter->convertToHtml($this->content());
     }
 
-    public function convertedContent(): string
+    public function convertedContent(string $content = ''): string
     {
-        $html = $this->convertToHtml()->getContent();
+        $html = $this->convertToHtml($content)->getContent();
 
         if ($this->shouldBeMinified()) {
             return str_replace([

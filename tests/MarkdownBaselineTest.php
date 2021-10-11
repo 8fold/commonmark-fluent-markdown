@@ -2,6 +2,71 @@
 
 use Eightfold\Markdown\Markdown;
 
+test('Markdown has multiple ways to approach rendering content', function() {
+    expect(
+        (string) Markdown::create('# Shortest form')
+    )->toBe(<<<md
+        <h1>Shortest form</h1>
+
+        md
+    );
+
+    expect(
+        Markdown::create('# Method call')
+            ->convertedContent()
+    )->toBe(<<<md
+        <h1>Method call</h1>
+
+        md
+    );
+
+    expect(
+        Markdown::create('# Standard CommonMark flow')
+            ->convertToHtml()
+            ->getContent()
+    )->toBe(<<<md
+        <h1>Standard CommonMark flow</h1>
+
+        md
+    );
+
+    // Using this instance for the next three expectations
+    $markdown = Markdown::create('- [ ] Short, reusable w/ extension')
+        ->gfm();
+
+    expect(
+        (string) $markdown
+    )->toBe(<<<md
+        <ul>
+        <li><input disabled="" type="checkbox"> Short, reusable w/ extension</li>
+        </ul>
+
+        md
+    );
+
+    expect(
+        $markdown->convertedContent('- [ ] Testing content override')
+    )->toBe(<<<md
+        <ul>
+        <li><input disabled="" type="checkbox"> Testing content override</li>
+        </ul>
+
+        md
+    );
+
+    expect(
+        $markdown
+            ->convertToHtml('- [ ] Testing content override, using ComonMark standard')
+            ->getContent()
+    )->toBe(<<<md
+        <ul>
+        <li><input disabled="" type="checkbox"> Testing content override, using ComonMark standard</li>
+        </ul>
+
+        md
+    );
+});
+
 test('Markdown is stringable', function() {
     $markdown = <<<md
     [.8fold](eightfold)
