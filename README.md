@@ -162,8 +162,7 @@ Output:
 <p>Block 2</p>
 ```
 
-In keeping with 8fold [XML Builder](https://github.com/8fold/php-xml-builder/tree/0.6.0)
-and [HTML Builder](https://github.com/8fold/php-html-builder/tree/0.5.1), which render XML and HTML as a flat string, Fluent Markdown provides the `minified` method to accomplish the same:
+In keeping with 8fold [XML Builder](https://github.com/8fold/php-xml-builder/tree/0.6.0) and [HTML Builder](https://github.com/8fold/php-html-builder/tree/0.5.1), which render XML and HTML as a flat string, Fluent Markdown provides the `minified` method to accomplish the same:
 
 ```php
 use Eightfold\Markdown\Markdown;
@@ -186,8 +185,7 @@ This is actually our third foray into wrapping CommonMark.
 CommonMark has been a staple in 8fold web development since inception. As we've progressed and continued to slowly evolve our own XML and HTML generating packages
 and used those solutions in an array of websites, CommonMark has been featured front and center, as it were.
 
-Given how much CommonMark is used in our various projects and our desire to be loosely coupled with any solutions we don't write ourselves, I think we've
-come to a solution that accomplishes both those missions.
+Given how much CommonMark is used in our various projects and our desire to be loosely coupled with any solutions we don't write ourselves, I think we've come to a solution that accomplishes both those missions.
 
 Minimal code to start, configure, and render HTML. A consistent API to reduce impact as CommonMark continues to evolve.
 
