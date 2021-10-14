@@ -47,7 +47,7 @@ class Markdown
     {
         $frontMatterExtension = new FrontMatterExtension();
         return $frontMatterExtension->getFrontMatterParser()->parse(
-            $this->content
+            $this->content . "\n"
         )->getFrontMatter();
     }
 

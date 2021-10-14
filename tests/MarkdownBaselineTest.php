@@ -166,6 +166,29 @@ test('Markdown can always use front matter', function() {
             'item 4'
         ]
     ]);
+
+    $frontMatterOnly = <<<md
+        ---
+        test: Hello, World!
+        list:
+            - item 1
+            - item 2
+            - item 3
+            - item 4
+        ---
+        md;
+
+    expect(
+        Markdown::create($frontMatterOnly)->frontMatter()
+    )->toBe([
+        'test' => 'Hello, World!',
+        'list' => [
+            'item 1',
+            'item 2',
+            'item 3',
+            'item 4'
+        ]
+    ]);
 });
 
 test('Markdown configured with greater security by default', function() {
