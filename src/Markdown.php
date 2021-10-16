@@ -103,7 +103,7 @@ class Markdown implements MarkdownConverterInterface
 
     public function __toString(): string
     {
-        return $this->convertedContent();
+        return $this->convert();
     }
 
     /**
