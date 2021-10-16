@@ -2,6 +2,37 @@
 
 use Eightfold\Markdown\Markdown;
 
+test('Markdown is reusable', function() {
+    $markdownConverter = Markdown::create()->config([
+        'html_input' => 'allow',
+        'allow_unsafe_links' => false
+    ])->minified();
+
+    expect(
+        $markdownConverter->convert()
+    )->toBe('');
+
+    expect(
+        $markdownConverter->convert('Hello, World!')
+    )->toBe(<<<html
+        <p>Hello, World!</p>
+        html
+    );
+
+    expect(
+        $markdownConverter->frontMatter(<<<md
+            ---
+            title: Some title
+            icon: /path/to/icon alt text
+            ---
+            md
+        )
+    )->toBe([
+        'title' => 'Some title',
+        'icon'  => '/path/to/icon alt text'
+    ]);
+});
+
 test('Markdown has multiple ways to approach rendering content', function() {
     expect(
         (string) Markdown::create('# Shortest form')

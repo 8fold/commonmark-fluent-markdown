@@ -44,11 +44,15 @@ class Markdown implements MarkdownConverterInterface
     /**
      * @return array<mixed> [description]
      */
-    public function frontMatter(): array
+    public function frontMatter(string $content = ''): array
     {
+        if (strlen($content) === 0) {
+            $content = $this->content;
+        }
+
         $frontMatterExtension = new FrontMatterExtension();
         return $frontMatterExtension->getFrontMatterParser()->parse(
-            $this->content . "\n"
+            $content . "\n"
         )->getFrontMatter();
     }
 
@@ -77,14 +81,6 @@ class Markdown implements MarkdownConverterInterface
         return $converter->convertToHtml($this->content());
     }
 
-    /**
-     * @deprecated Use `convert()` instead.
-     */
-    public function convertedContent(string $content = ''): string
-    {
-        return $this->convert($content);
-    }
-
     public function convert(string $content = ''): string
     {
         $html = $this->convertToHtml($content)->getContent();
@@ -104,6 +100,14 @@ class Markdown implements MarkdownConverterInterface
     public function __toString(): string
     {
         return $this->convert();
+    }
+
+    /**
+     * @deprecated Use `convert()` instead.
+     */
+    public function convertedContent(string $content = ''): string
+    {
+        return $this->convert($content);
     }
 
     /**
