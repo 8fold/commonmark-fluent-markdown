@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Eightfold\Markdown;
 
+use League\CommonMark\MarkdownConverterInterface;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
 use League\CommonMark\MarkdownConverter;
 
-class Markdown
+class Markdown implements MarkdownConverterInterface
 {
     use FluentApi;
     use ExtensionsCommonMark;
@@ -59,7 +60,7 @@ class Markdown
         )->getContent();
     }
 
-    public function convertToHtml(): RenderedContentInterface
+    public function convertToHtml(string $content = ''): RenderedContentInterface
     {
         $environment = new Environment($this->configuration());
         $environment->addExtension(new CommonMarkCoreExtension());
@@ -69,12 +70,24 @@ class Markdown
         }
 
         $converter = new MarkdownConverter($environment);
+
+        if (strlen($content) > 0) {
+            return $converter->convertToHtml($content);
+        }
         return $converter->convertToHtml($this->content());
     }
 
-    public function convertedContent(): string
+    /**
+     * @deprecated Use `convert()` instead.
+     */
+    public function convertedContent(string $content = ''): string
     {
-        $html = $this->convertToHtml()->getContent();
+        return $this->convert($content);
+    }
+
+    public function convert(string $content = ''): string
+    {
+        $html = $this->convertToHtml($content)->getContent();
 
         if ($this->shouldBeMinified()) {
             return str_replace([
@@ -90,7 +103,7 @@ class Markdown
 
     public function __toString(): string
     {
-        return $this->convertedContent();
+        return $this->convert();
     }
 
     /**
