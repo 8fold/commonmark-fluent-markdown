@@ -21,16 +21,6 @@ class Markdown implements MarkdownConverterInterface
 
     private bool $minified = false;
 
-    /**
-     * @var array<mixed>
-     */
-    private array $config = [];
-
-    /**
-     * @var array<string>
-     */
-    private array $extensions = [];
-
     public static function create(string $content = ''): Markdown
     {
         return new Markdown($content);
@@ -44,7 +34,7 @@ class Markdown implements MarkdownConverterInterface
     /**
      * @return array<mixed> [description]
      */
-    public function frontMatter(string $content = ''): array
+    public function theFrontMatter(string $content = ''): array
     {
         if (strlen($content) === 0) {
             $content = $this->content;
@@ -61,11 +51,11 @@ class Markdown implements MarkdownConverterInterface
         return $frontMatter;
     }
 
-    public function content(): string
+    public function theContent(string $content = ''): string
     {
         $frontMatterExtension = new FrontMatterExtension();
         return $frontMatterExtension->getFrontMatterParser()->parse(
-            $this->content
+            (strlen($content) === 0) ? $this->content : $content
         )->getContent();
     }
 
@@ -88,7 +78,9 @@ class Markdown implements MarkdownConverterInterface
 
     public function convert(string $content = ''): string
     {
-        $html = $this->convertToHtml($content)->getContent();
+        $html = $this->convertToHtml(
+            (strlen($content) === 0) ? $this->content() : $content
+        )->getContent();
 
         if ($this->shouldBeMinified()) {
             return str_replace([
@@ -108,17 +100,9 @@ class Markdown implements MarkdownConverterInterface
     }
 
     /**
-     * @deprecated Use `convert()` instead.
-     */
-    public function convertedContent(string $content = ''): string
-    {
-        return $this->convert($content);
-    }
-
-    /**
      * @return array<mixed> [description]
      */
-    private function configuration(): array
+    private function theConfig(): array
     {
         if (empty($this->config)) {
             $this->config = [
@@ -138,8 +122,48 @@ class Markdown implements MarkdownConverterInterface
     /**
      * @return array<string> [description]
      */
-    private function extensions(): array
+    private function theExtensions(): array
     {
         return $this->extensions;
+    }
+
+    /**
+     * @deprecated use `theFrontMatter()` instead.
+     */
+    public function frontMatter(string $content = ''): array
+    {
+        return $this->theFrontMatter($content);
+    }
+
+    /**
+     * @deprecated Use `theContent()` instead.
+     */
+    public function content(string $content = ''): string
+    {
+        return $this->theContent($content);
+    }
+
+    /**
+     * @deprecated Use `convert()` instead.
+     */
+    public function convertedContent(string $content = ''): string
+    {
+        return $this->convert($content);
+    }
+
+    /**
+     * @deprecated Use `theConfig()` instead.
+     */
+    private function configuration(): array
+    {
+        return $this->theConfig();
+    }
+
+    /**
+     * @deprecated Use `theExtensions()` instead.
+     */
+    private function extensions(): array
+    {
+        return $this->theExtensions();
     }
 }

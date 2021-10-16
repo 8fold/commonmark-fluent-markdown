@@ -35,7 +35,21 @@ test('Markdown is reusable', function() {
     expect(
         $markdownConverter->frontMatter()
     )->toBeArray()->toBeEmpty();
-})->group('focus');
+
+    expect(
+        $markdownConverter->content(<<<md
+            ---
+            title: Hello
+            ---
+
+            # A title
+            md
+        )
+    )->toBe(<<<md
+        # A title
+        md
+    );
+});
 
 test('Markdown has multiple ways to approach rendering content', function() {
     expect(
