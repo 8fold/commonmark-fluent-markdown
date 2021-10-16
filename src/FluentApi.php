@@ -58,13 +58,14 @@ trait FluentApi
 
     public function addExtensions(string ...$extensionClassNames): Markdown
     {
-        $ext = array_merge($this->extensions(), $extensionClassNames);
+        $ext = array_merge($this->theExtensions(), $extensionClassNames);
         $this->extensions = array_unique($ext);
         return $this;
     }
 
     /**
      * @deprecated Use `overwriteConfig()` instead.
+     * @param array<mixed> $config
      */
     public function config(array $config = []): Markdown
     {
@@ -73,6 +74,7 @@ trait FluentApi
 
     /**
      * @deprecated Use `addConfig()` instead.
+     * @param mixed $value
      */
     public function modifyConfig(string $configId, $value): Markdown
     {

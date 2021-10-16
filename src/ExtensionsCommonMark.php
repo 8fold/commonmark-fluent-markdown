@@ -34,7 +34,7 @@ trait ExtensionsCommonMark
     public function defaultAttributes(array $config = []): Markdown
     {
         if (count($config) > 0) {
-            $this->modifyConfig('external_link', $config);
+            $this->addConfig('external_link', $config);
 
         }
 
@@ -62,7 +62,7 @@ trait ExtensionsCommonMark
     public function disallowedRawHtml(array $tags = []): Markdown
     {
         if (count($tags) > 0) {
-            $this->modifyConfig(
+            $this->addConfig(
                 'disallowed_raw_html',
                 ['disallowed_tags' => $tags]
             );
@@ -82,7 +82,7 @@ trait ExtensionsCommonMark
     public function externalLinks(array $config = []): Markdown
     {
         if (count($config) > 0) {
-            $this->modifyConfig('external_link', $config);
+            $this->addConfig('external_link', $config);
 
         }
 
@@ -100,7 +100,7 @@ trait ExtensionsCommonMark
     public function footnotes(array $config = []): Markdown
     {
         if (count($config) > 0) {
-            $this->modifyConfig('footnote', $config);
+            $this->addConfig('footnote', $config);
 
         }
 
@@ -133,7 +133,7 @@ trait ExtensionsCommonMark
     public function headingPermalinks(array $config = []): Markdown
     {
         if (count($config) > 0) {
-            $this->modifyConfig('heading_permalink', $config);
+            $this->addConfig('heading_permalink', $config);
 
         }
 
@@ -161,7 +161,7 @@ trait ExtensionsCommonMark
     public function mentions(array $config = []): Markdown
     {
         if (count($config) > 0) {
-            $this->modifyConfig('mentions', $config);
+            $this->addConfig('mentions', $config);
 
         }
 
@@ -202,13 +202,13 @@ trait ExtensionsCommonMark
         array $headingPermalinksConfig = []
     ): Markdown {
         if (count($config) > 0) {
-            $this->modifyConfig('table_of_contents', $config);
+            $this->addConfig('table_of_contents', $config);
 
         }
 
         $permalinkClassName = '\League\CommonMark\Extension' .
             '\HeadingPermalink\HeadingPermalinkExtension';
-        if (! in_array($permalinkClassName, $this->extensions())) {
+        if (! in_array($permalinkClassName, $this->theExtensions())) {
             $this->headingPermalinks($headingPermalinksConfig);
 
         }
@@ -237,7 +237,7 @@ trait ExtensionsCommonMark
     public function smartPunctuation(array $config = []): Markdown
     {
         if (count($config) > 0) {
-            $this->modifyConfig('smartpunct', $config);
+            $this->addConfig('smartpunct', $config);
 
         }
 

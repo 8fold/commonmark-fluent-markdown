@@ -3,7 +3,7 @@
 use Eightfold\Markdown\Markdown;
 
 test('Markdown is reusable', function() {
-    $markdownConverter = Markdown::create()->config([
+    $markdownConverter = Markdown::create()->overwriteConfig([
         'html_input' => 'allow',
         'allow_unsafe_links' => false
     ])->minified();
@@ -20,7 +20,7 @@ test('Markdown is reusable', function() {
     );
 
     expect(
-        $markdownConverter->frontMatter(<<<md
+        $markdownConverter->theFrontMatter(<<<md
             ---
             title: Some title
             icon: /path/to/icon alt text
@@ -33,11 +33,11 @@ test('Markdown is reusable', function() {
     ]);
 
     expect(
-        $markdownConverter->frontMatter()
+        $markdownConverter->theFrontMatter()
     )->toBeArray()->toBeEmpty();
 
     expect(
-        $markdownConverter->content(<<<md
+        $markdownConverter->theContent(<<<md
             ---
             title: Hello
             ---
@@ -138,7 +138,7 @@ test('Markdown can use abbreviations', function() {
     expect(
         Markdown::create($markdown)
             ->abbreviations()
-            ->convertedContent()
+            ->convert()
     )->toBe(<<<html
         <p><abbr title="eightfold">8fold</abbr></p>
 
@@ -156,7 +156,7 @@ test('Markdown uses GFM based on table test', function() {
     expect(
         Markdown::create($markdown)
             ->gitHubFlavoredMarkdown()
-            ->minified()->convertedContent()
+            ->minified()->convert()
     )->toBe(<<<html
         <table><thead><tr><th align="left">col 1</th><th align="left">col 2</th></tr></thead><tbody><tr><td align="left">1</td><td align="left"></td></tr></tbody></table>
         html
@@ -165,7 +165,7 @@ test('Markdown uses GFM based on table test', function() {
     expect(
         Markdown::create($markdown)
             ->gfm()
-            ->minified()->convertedContent()
+            ->minified()->convert()
     )->toBe(<<<html
         <table><thead><tr><th align="left">col 1</th><th align="left">col 2</th></tr></thead><tbody><tr><td align="left">1</td><td align="left"></td></tr></tbody></table>
         html
@@ -177,7 +177,7 @@ test('Markdown respects configured disallowed raw html', function() {
         Markdown::create(<<<md
             <div>Hello, World!</div>
             md
-        )->disallowedRawHtml(['div'])->minified()->convertedContent()
+        )->disallowedRawHtml(['div'])->minified()->convert()
     )->toBe(<<<html
         html
     );
@@ -194,7 +194,7 @@ test('Markdown can use description lists', function() {
             Orange
             :   The fruit of an evergreen tree of the genus Citrus.
             md
-        )->descriptionLists()->minified()->convertedContent()
+        )->descriptionLists()->minified()->convert()
     )->toBe(<<<html
         <dl><dt>Apple</dt><dd>Pomaceous fruit of plants of the genus Malus inthe family Rosaceae.</dd><dd>An American computer company.</dd><dt>Orange</dt><dd>The fruit of an evergreen tree of the genus Citrus.</dd></dl>
         html
@@ -210,15 +210,15 @@ test('Markdown can modify config', function() {
     );
 
     expect(
-        $default->minified()->convertedContent()
+        $default->minified()->convert()
     )->toBe(<<<html
         <p><a>unsafe link</a></p>
         html
     );
 
     expect(
-        $default->modifyConfig('allow_unsafe_links', true)
-            ->minified()->convertedContent()
+        $default->addConfig('allow_unsafe_links', true)
+            ->minified()->convert()
     )->toBe(<<<html
         <p><a href="data:,Hello%2C%20World%21">unsafe link</a></p>
         html
@@ -235,7 +235,7 @@ test('Markdown has shorthand extensions', function() {
 
             This is *red*{style="color: red"}.
             md
-            )->attributes()->convertedContent()
+            )->attributes()->convert()
     )->toBe(<<<html
         <p>Hello, World!</p>
         <blockquote title="Blockquote title">
@@ -262,7 +262,7 @@ test('Markdown can always use front matter', function() {
         md;
 
     expect(
-        Markdown::create($markdown)->convertedContent()
+        Markdown::create($markdown)->convert()
     )->toBe(<<<html
         <p>Stuff and things.</p>
 
@@ -270,7 +270,7 @@ test('Markdown can always use front matter', function() {
     );
 
     expect(
-        Markdown::create($markdown)->frontMatter()
+        Markdown::create($markdown)->theFrontMatter()
     )->toBe([
         'test' => 'Hello, World!',
         'list' => [
@@ -293,7 +293,7 @@ test('Markdown can always use front matter', function() {
         md;
 
     expect(
-        Markdown::create($frontMatterOnly)->frontMatter()
+        Markdown::create($frontMatterOnly)->theFrontMatter()
     )->toBe([
         'test' => 'Hello, World!',
         'list' => [
@@ -313,7 +313,7 @@ test('Markdown configured with greater security by default', function() {
 
             [unsafe link](data:,Hello%2C%20World%21)
             md
-            )->minified()->convertedContent()
+            )->minified()->convert()
     )->toBe(<<<html
         <p><a>unsafe link</a></p>
         html
@@ -328,11 +328,11 @@ test('Markdown configuration can be overridden', function() {
 
             [unsafe link](data:,Hello%2C%20World%21)
             md
-            )->config([
+            )->overwriteConfig([
                 'html_input' => 'allow',
                 'allow_unsafe_links' => true,
                 'max_nesting_level' => PHP_INT_MAX
-            ])->minified()->convertedContent()
+            ])->minified()->convert()
     )->toBe(<<<html
         <script>alert("Hello XSS!");</script><p><a href="data:,Hello%2C%20World%21">unsafe link</a></p>
         html
@@ -350,7 +350,7 @@ test('Markdown can clear extensions', function() {
         Markdown::create($markdown)
             ->addExtensions(
                 League\CommonMark\Extension\Table\TableExtension::class
-            )->overwriteExtensions()->convertedContent()
+            )->overwriteExtensions()->convert()
     )->toBe(<<<html
         <p>|col 1 |col 2 |
         |:-----|:-----|
@@ -370,7 +370,7 @@ test('Markdown output can be minified', function() {
         Markdown::create($markdown)
             ->addExtensions(
                 League\CommonMark\Extension\Table\TableExtension::class
-            )->minified()->convertedContent()
+            )->minified()->convert()
     )->toBe(<<<html
         <table><thead><tr><th align="left">col 1</th><th align="left">col 2</th></tr></thead><tbody><tr><td align="left">1</td><td align="left"></td></tr></tbody></table>
         html
@@ -387,7 +387,7 @@ test('Markdown can add and apply extensions', function() {
         Markdown::create($markdown)
             ->addExtensions(
                 League\CommonMark\Extension\Table\TableExtension::class
-            )->convertedContent()
+            )->convert()
     )->toBe(<<<html
         <table>
         <thead>
@@ -410,7 +410,7 @@ test('Markdown can add and apply extensions', function() {
 
 test('Markdown can convert to, and immiediately return, HTML', function() {
     expect(
-        Markdown::create('# Hello, World!')->convertedContent()
+        Markdown::create('# Hello, World!')->convert()
     )->toBe(
         '<h1>Hello, World!</h1>'."\n"
     );
@@ -426,7 +426,7 @@ test('Markdown can convert to HTML', function() {
 
 test('Markdown can initialize with string', function() {
     expect(
-        Markdown::create('# Hello, World!')->content()
+        Markdown::create('# Hello, World!')->theContent()
     )->toBe(
         '# Hello, World!'
     );

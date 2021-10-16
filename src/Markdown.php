@@ -34,6 +34,21 @@ class Markdown implements MarkdownConverterInterface
     /**
      * @return array<mixed> [description]
      */
+    public function theConfig(): array
+    {
+        if (empty($this->config)) {
+            $this->config = [
+                'html_input' => 'strip',
+                'allow_unsafe_links' => false,
+                'max_nesting_level' => 50
+            ];
+        }
+        return $this->config;
+    }
+
+    /**
+     * @return array<mixed> [description]
+     */
     public function theFrontMatter(string $content = ''): array
     {
         if (strlen($content) === 0) {
@@ -61,26 +76,24 @@ class Markdown implements MarkdownConverterInterface
 
     public function convertToHtml(string $content = ''): RenderedContentInterface
     {
-        $environment = new Environment($this->configuration());
+        $environment = new Environment($this->theConfig());
         $environment->addExtension(new CommonMarkCoreExtension());
 
-        foreach ($this->extensions() as $extensionClass) {
+        foreach ($this->theExtensions() as $extensionClass) {
             $environment->addExtension(new $extensionClass());
         }
 
         $converter = new MarkdownConverter($environment);
 
-        if (strlen($content) > 0) {
-            return $converter->convertToHtml($content);
-        }
-        return $converter->convertToHtml($this->content());
+        // if (strlen($content) > 0) {
+        //     return $converter->convertToHtml($content);
+        // }
+        return $converter->convertToHtml($this->theContent($content));
     }
 
     public function convert(string $content = ''): string
     {
-        $html = $this->convertToHtml(
-            (strlen($content) === 0) ? $this->content() : $content
-        )->getContent();
+        $html = $this->convertToHtml($this->theContent($content))->getContent();
 
         if ($this->shouldBeMinified()) {
             return str_replace([
@@ -99,21 +112,6 @@ class Markdown implements MarkdownConverterInterface
         return $this->convert();
     }
 
-    /**
-     * @return array<mixed> [description]
-     */
-    private function theConfig(): array
-    {
-        if (empty($this->config)) {
-            $this->config = [
-                'html_input' => 'strip',
-                'allow_unsafe_links' => false,
-                'max_nesting_level' => 50
-            ];
-        }
-        return $this->config;
-    }
-
     private function shouldBeMinified(): bool
     {
         return $this->minified;
@@ -129,6 +127,7 @@ class Markdown implements MarkdownConverterInterface
 
     /**
      * @deprecated use `theFrontMatter()` instead.
+     * @return array<mixed>
      */
     public function frontMatter(string $content = ''): array
     {
@@ -153,6 +152,7 @@ class Markdown implements MarkdownConverterInterface
 
     /**
      * @deprecated Use `theConfig()` instead.
+     * @return array<mixed>
      */
     private function configuration(): array
     {
@@ -161,6 +161,7 @@ class Markdown implements MarkdownConverterInterface
 
     /**
      * @deprecated Use `theExtensions()` instead.
+     * @return array<string>
      */
     private function extensions(): array
     {
