@@ -51,9 +51,14 @@ class Markdown implements MarkdownConverterInterface
         }
 
         $frontMatterExtension = new FrontMatterExtension();
-        return $frontMatterExtension->getFrontMatterParser()->parse(
+        $frontMatter = $frontMatterExtension->getFrontMatterParser()->parse(
             $content . "\n"
         )->getFrontMatter();
+
+        if ($frontMatter === null) {
+            return [];
+        }
+        return $frontMatter;
     }
 
     public function content(): string

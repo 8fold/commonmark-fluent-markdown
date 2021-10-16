@@ -31,7 +31,11 @@ test('Markdown is reusable', function() {
         'title' => 'Some title',
         'icon'  => '/path/to/icon alt text'
     ]);
-});
+
+    expect(
+        $markdownConverter->frontMatter()
+    )->toBeArray()->toBeEmpty();
+})->group('focus');
 
 test('Markdown has multiple ways to approach rendering content', function() {
     expect(
