@@ -13,7 +13,7 @@ test('Markdown has multiple ways to approach rendering content', function() {
 
     expect(
         Markdown::create('# Method call')
-            ->convertedContent()
+            ->convert()
     )->toBe(<<<md
         <h1>Method call</h1>
 
@@ -45,7 +45,7 @@ test('Markdown has multiple ways to approach rendering content', function() {
     );
 
     expect(
-        $markdown->convertedContent('- [ ] Testing content override')
+        $markdown->convert('- [ ] Testing content override')
     )->toBe(<<<md
         <ul>
         <li><input disabled="" type="checkbox"> Testing content override</li>

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Eightfold\Markdown;
 
+use League\CommonMark\MarkdownConverterInterface;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
 use League\CommonMark\MarkdownConverter;
 
-class Markdown
+class Markdown implements MarkdownConverterInterface
 {
     use FluentApi;
     use ExtensionsCommonMark;
@@ -76,7 +77,15 @@ class Markdown
         return $converter->convertToHtml($this->content());
     }
 
+    /**
+     * @deprecated Use `convert()` instead.
+     */
     public function convertedContent(string $content = ''): string
+    {
+        return $this->convert($content);
+    }
+
+    public function convert(string $content = ''): string
     {
         $html = $this->convertToHtml($content)->getContent();
 
