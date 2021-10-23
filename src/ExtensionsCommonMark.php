@@ -6,6 +6,8 @@ namespace Eightfold\Markdown;
 
 use Eightfold\Markdown\Markdown;
 
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+
 trait ExtensionsCommonMark
 {
     public function attributes(): Markdown

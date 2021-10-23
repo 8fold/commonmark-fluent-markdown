@@ -14,6 +14,29 @@ composer require 8fold/commonmark-fluent-markdown
 
 ⚠️ Warning: Users of this library are responsible for sanitizing content.
 
+There are two entry classes:
+
+1. Markdown: Does not follow strictly follow conventions established by the [League CommonMark](https://commonmark.thephpleague.com).
+2. FluentCommonMark: Tries to mirror the conventions of League CommonMark in a fluent way.
+
+The naming convention for methods that are not part of the League CommonMark implementation follow the convention established by [PSR-7](https://www.php-fig.org/psr/psr-7/).
+
+Methods prefixed by the word `with` will return a new instance to facilitate immunitability.
+
+### Markdown
+
+The Markdown class makes some presumptions the FluentCommonMark class does not:
+
+1. You will use the CommonMarkCoreExtension.
+2. There will always be the potential for front matter; therefore, the FrontMatterExtension will always be used to separate front matter from the body.
+
+The Markdown class also includes methods that help apply the rules of CommonMark. For example, the Table of Contents extension required the Heading Permalink extension; therefore, applying the Table of Contents extension will automatically apply the Heading Permalink extension.
+
+
+
+
+
+
 Write some markdown:
 
 ```markdown
