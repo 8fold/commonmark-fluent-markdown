@@ -6,7 +6,7 @@ use League\CommonMark\Environment\Environment as Environment;
 use League\Config\ConfigurationInterface as ConfigurationInterface;
 
 test('Is performant and small', function() {
-    $startMs = microtime(true);
+    $startMs = hrtime(true);
 
     $startMem = memory_get_usage();
 
@@ -21,14 +21,14 @@ test('Is performant and small', function() {
             md
         )->getContent();
 
-    $endMs = microtime(true);
+    $endMs = hrtime(true);
 
     $endMem = memory_get_usage();
 
     $elapsed = $endMs - $startMs;
     $ms      = $elapsed/1e+6;
 
-    expect($ms)->toBeLessThan(0.0000001);
+    expect($ms)->toBeLessThan(16.5);
 
     $used = $endMem - $startMem;
     $kb   = round($used/1024.2);

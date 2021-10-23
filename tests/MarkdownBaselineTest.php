@@ -2,446 +2,65 @@
 
 use Eightfold\Markdown\Markdown;
 
-test('Markdown is reusable', function() {
-    $markdownConverter = Markdown::create()->overwriteConfig([
-        'html_input' => 'allow',
-        'allow_unsafe_links' => false
-    ])->minified();
+test('Is performant and small', function() {
+    $startMs = hrtime(true);
 
-    expect(
-        $markdownConverter->convert()
-    )->toBe('');
+    $startMem = memory_get_usage();
 
-    expect(
-        $markdownConverter->convert('Hello, World!')
-    )->toBe(<<<html
-        <p>Hello, World!</p>
-        html
-    );
-
-    expect(
-        $markdownConverter->theFrontMatter(<<<md
-            ---
-            title: Some title
-            icon: /path/to/icon alt text
-            ---
-            md
-        )
-    )->toBe([
-        'title' => 'Some title',
-        'icon'  => '/path/to/icon alt text'
-    ]);
-
-    expect(
-        $markdownConverter->theFrontMatter()
-    )->toBeArray()->toBeEmpty();
-
-    expect(
-        $markdownConverter->theBody(<<<md
-            ---
-            title: Hello
-            ---
-
-            # A title
-            md
-        )
-    )->toBe(<<<md
-        # A title
-        md
-    );
-});
-
-test('Markdown has multiple ways to approach rendering content', function() {
-    expect(
-        (string) Markdown::create('# Shortest form')
-    )->toBe(<<<md
-        <h1>Shortest form</h1>
-
-        md
-    );
-
-    expect(
-        Markdown::create('# Method call')
-            ->convert()
-    )->toBe(<<<md
-        <h1>Method call</h1>
-
-        md
-    );
-
-    expect(
-        Markdown::create('# Standard CommonMark flow')
-            ->convertToHtml()
-            ->getContent()
-    )->toBe(<<<md
-        <h1>Standard CommonMark flow</h1>
-
-        md
-    );
-
-    // Using this instance for the next three expectations
-    $markdown = Markdown::create('- [ ] Short, reusable w/ extension')
-        ->gfm();
-
-    expect(
-        (string) $markdown
-    )->toBe(<<<md
-        <ul>
-        <li><input disabled="" type="checkbox"> Short, reusable w/ extension</li>
-        </ul>
-
-        md
-    );
-
-    expect(
-        $markdown->convert('- [ ] Testing content override')
-    )->toBe(<<<md
-        <ul>
-        <li><input disabled="" type="checkbox"> Testing content override</li>
-        </ul>
-
-        md
-    );
-
-    expect(
-        $markdown
-            ->convertToHtml('- [ ] Testing content override, using ComonMark standard')
-            ->getContent()
-    )->toBe(<<<md
-        <ul>
-        <li><input disabled="" type="checkbox"> Testing content override, using ComonMark standard</li>
-        </ul>
-
-        md
-    );
-});
-
-test('Markdown is stringable', function() {
-    $markdown = <<<md
-    [.8fold](eightfold)
-    md;
-
-    expect(
-        (string) Markdown::create($markdown)->abbreviations()
-    )->toBe(<<<html
-        <p><abbr title="eightfold">8fold</abbr></p>
-
-        html
-    );
-});
-
-test('Markdown can use abbreviations', function() {
-    $markdown = <<<md
-    [.8fold](eightfold)
-    md;
-
-    expect(
-        Markdown::create($markdown)
-            ->abbreviations()
-            ->convert()
-    )->toBe(<<<html
-        <p><abbr title="eightfold">8fold</abbr></p>
-
-        html
-    );
-});
-
-test('Markdown uses GFM based on table test', function() {
-    $markdown = <<<md
-    |col 1 |col 2 |
-    |:-----|:-----|
-    |1     |      |
-    md;
-
-    expect(
-        Markdown::create($markdown)
-            ->gitHubFlavoredMarkdown()
-            ->minified()->convert()
-    )->toBe(<<<html
-        <table><thead><tr><th align="left">col 1</th><th align="left">col 2</th></tr></thead><tbody><tr><td align="left">1</td><td align="left"></td></tr></tbody></table>
-        html
-    );
-
-    expect(
-        Markdown::create($markdown)
-            ->gfm()
-            ->minified()->convert()
-    )->toBe(<<<html
-        <table><thead><tr><th align="left">col 1</th><th align="left">col 2</th></tr></thead><tbody><tr><td align="left">1</td><td align="left"></td></tr></tbody></table>
-        html
-    );
-});
-
-test('Markdown respects configured disallowed raw html', function() {
-    expect(
-        Markdown::create(<<<md
-            <div>Hello, World!</div>
-            md
-        )->disallowedRawHtml(['div'])->minified()->convert()
-    )->toBe(<<<html
-        html
-    );
-});
-
-test('Markdown can use description lists', function() {
-    expect(
-        Markdown::create(<<<md
+    $html = Markdown::create()->descriptionLists()->minified()->convert(<<<md
             Apple
-            :   Pomaceous fruit of plants of the genus Malus in
-                the family Rosaceae.
+            :   Pomaceous fruit of plants of the genus Malus in the family Rosaceae.
             :   An American computer company.
 
             Orange
             :   The fruit of an evergreen tree of the genus Citrus.
             md
-        )->descriptionLists()->minified()->convert()
-    )->toBe(<<<html
-        <dl><dt>Apple</dt><dd>Pomaceous fruit of plants of the genus Malus inthe family Rosaceae.</dd><dd>An American computer company.</dd><dt>Orange</dt><dd>The fruit of an evergreen tree of the genus Citrus.</dd></dl>
-        html
-    );
-});
+        );
 
-test('Markdown can modify config', function() {
-    $default = Markdown::create(<<<md
-        <script>alert("Hello XSS!");</script>
+    $endMs = hrtime(true);
 
-        [unsafe link](data:,Hello%2C%20World%21)
-        md
-    );
+    $endMem = memory_get_usage();
 
     expect(
-        $default->minified()->convert()
+        $html
     )->toBe(<<<html
-        <p><a>unsafe link</a></p>
+        <dl><dt>Apple</dt><dd>Pomaceous fruit of plants of the genus Malus in the family Rosaceae.</dd><dd>An American computer company.</dd><dt>Orange</dt><dd>The fruit of an evergreen tree of the genus Citrus.</dd></dl>
         html
     );
 
+    $elapsed = $endMs - $startMs;
+    $ms      = $elapsed/1e+6;
+
+    expect($ms)->toBeLessThan(0.6);
+
+    $used = $endMem - $startMem;
+    $kb   = round($used/1024.2);
+
+    expect($kb)->toBeLessThan(1855);
+})->group('markdown');
+
+test('Markdown has abbreviations', function() {
     expect(
-        $default->addConfig('allow_unsafe_links', true)
-            ->minified()->convert()
-    )->toBe(<<<html
-        <p><a href="data:,Hello%2C%20World%21">unsafe link</a></p>
-        html
-    );
-});
-
-test('Markdown has shorthand extensions', function() {
-    expect(
-        Markdown::create(<<<md
-            Hello, World!{.classy}
-
-            > A nice blockquote
-            {: title="Blockquote title"}
-
-            This is *red*{style="color: red"}.
+        Markdown::create()->abbreviations()->minified()->convert(<<<md
+            [.8fold](eightfold)
             md
-            )->attributes()->convert()
+        )
     )->toBe(<<<html
-        <p>Hello, World!</p>
-        <blockquote title="Blockquote title">
-        <p>A nice blockquote</p>
-        </blockquote>
-        <p>This is <em style="color: red">red</em>.</p>
-
+        <p><abbr title="eightfold">8fold</abbr></p>
         html
     );
-});
-
-test('Markdown can always use front matter', function() {
-    $markdown = <<<md
-        ---
-        test: Hello, World!
-        list:
-            - item 1
-            - item 2
-            - item 3
-            - item 4
-        ---
-
-        Stuff and things.
-        md;
-
-    expect(
-        Markdown::create($markdown)->convert()
-    )->toBe(<<<html
-        <p>Stuff and things.</p>
-
-        html
-    );
-
-    expect(
-        Markdown::create($markdown)->theFrontMatter()
-    )->toBe([
-        'test' => 'Hello, World!',
-        'list' => [
-            'item 1',
-            'item 2',
-            'item 3',
-            'item 4'
-        ]
-    ]);
-
-    $frontMatterOnly = <<<md
-        ---
-        test: Hello, World!
-        list:
-            - item 1
-            - item 2
-            - item 3
-            - item 4
-        ---
-        md;
-
-    expect(
-        Markdown::create($frontMatterOnly)->theFrontMatter()
-    )->toBe([
-        'test' => 'Hello, World!',
-        'list' => [
-            'item 1',
-            'item 2',
-            'item 3',
-            'item 4'
-        ]
-    ]);
-});
+})->group('markdown');
 
 test('Markdown configured with greater security by default', function() {
     // Max nesting level not tested
     expect(
-        Markdown::create(<<<md
+        Markdown::create()->minified()->convert(<<<md
             <script>alert("Hello XSS!");</script>
 
             [unsafe link](data:,Hello%2C%20World%21)
-            md
-            )->minified()->convert()
+            md)
     )->toBe(<<<html
         <p><a>unsafe link</a></p>
         html
     );
-});
-
-test('Markdown configuration can be overridden', function() {
-    // Max nesting level not tested
-    expect(
-        Markdown::create(<<<md
-            <script>alert("Hello XSS!");</script>
-
-            [unsafe link](data:,Hello%2C%20World%21)
-            md
-            )->overwriteConfig([
-                'html_input' => 'allow',
-                'allow_unsafe_links' => true,
-                'max_nesting_level' => PHP_INT_MAX
-            ])->minified()->convert()
-    )->toBe(<<<html
-        <script>alert("Hello XSS!");</script><p><a href="data:,Hello%2C%20World%21">unsafe link</a></p>
-        html
-    );
-});
-
-test('Markdown can clear extensions', function() {
-    $markdown = <<<md
-    |col 1 |col 2 |
-    |:-----|:-----|
-    |1     |      |
-    md;
-
-    expect(
-        Markdown::create($markdown)
-            ->addExtensions(
-                League\CommonMark\Extension\Table\TableExtension::class
-            )->overwriteExtensions()->convert()
-    )->toBe(<<<html
-        <p>|col 1 |col 2 |
-        |:-----|:-----|
-        |1     |      |</p>
-
-        html
-    );
-});
-
-test('Markdown output can be minified', function() {
-    $markdown = <<<md
-    |col 1 |col 2 |
-    |:-----|:-----|
-    |1     |      |
-    md;
-    expect(
-        Markdown::create($markdown)
-            ->addExtensions(
-                League\CommonMark\Extension\Table\TableExtension::class
-            )->minified()->convert()
-    )->toBe(<<<html
-        <table><thead><tr><th align="left">col 1</th><th align="left">col 2</th></tr></thead><tbody><tr><td align="left">1</td><td align="left"></td></tr></tbody></table>
-        html
-    );
-});
-
-test('Markdown can add and apply extensions', function() {
-    $markdown = <<<md
-    |col 1 |col 2 |
-    |:-----|:-----|
-    |1     |      |
-    md;
-    expect(
-        Markdown::create($markdown)
-            ->addExtensions(
-                League\CommonMark\Extension\Table\TableExtension::class
-            )->convert()
-    )->toBe(<<<html
-        <table>
-        <thead>
-        <tr>
-        <th align="left">col 1</th>
-        <th align="left">col 2</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-        <td align="left">1</td>
-        <td align="left"></td>
-        </tr>
-        </tbody>
-        </table>
-
-        html
-    );
-});
-
-test('Markdown can convert to, and immiediately return, HTML', function() {
-    expect(
-        Markdown::create('# Hello, World!')->convert()
-    )->toBe(
-        '<h1>Hello, World!</h1>'."\n"
-    );
-});
-
-test('Markdown can convert to HTML', function() {
-    expect(
-        Markdown::create('# Hello, World!')->convertToHtml()->getContent()
-    )->toBe(
-        '<h1>Hello, World!</h1>'."\n"
-    );
-});
-
-test('Markdown can initialize with string', function() {
-    expect(
-        Markdown::create('# Hello, World!')->theBody()
-    )->toBe(
-        '# Hello, World!'
-    );
-});
-
-test('Markdown has static initializer', function() {
-    expect(
-        Markdown::create()
-    )->toBeInstanceOf(
-        Markdown::class
-    );
-});
-
-test('Markdown class exists', function() {
-    expect(
-        class_exists(Markdown::class)
-    )->toBeTrue();
-});
+})->group('markdown');
