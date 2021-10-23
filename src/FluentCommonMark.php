@@ -12,7 +12,8 @@ use League\Config\ConfigurationInterface as ConfigurationInterface;
 use League\Config\Configuration as Configuration;
 
 use League\CommonMark\MarkdownConverterInterface as ConverterInterface;
-use League\CommonMark\Output\RenderedContentInterface as RenderedContentInterface;
+use League\CommonMark\Output\RenderedContentInterface
+    as RenderedContentInterface;
 
 use League\CommonMark\Extension\ExtensionInterface as ExtensionInterface;
 
@@ -20,31 +21,44 @@ use League\CommonMark\Extension\FrontMatter\FrontMatterExtension as FrontMatter;
 
 use League\CommonMark\Extension\Attributes\AttributesExtension as Attributes;
 use League\CommonMark\Extension\Autolink\AutolinkExtension as AutoLink;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension as CoreExtension;
-use League\CommonMark\Extension\DefaultAttributes\DefaultAttributesExtension as DefaultAttributes;
-use League\CommonMark\Extension\DescriptionList\DescriptionListExtension as DescriptionList;
-use League\CommonMark\Extension\DisallowedRawHtml\DisallowedRawHtmlExtension as DisallowedHtml;
-use League\CommonMark\Extension\ExternalLink\ExternalLinkExtension as ExternalLinks;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension
+    as CoreExtension;
+use League\CommonMark\Extension\DefaultAttributes\DefaultAttributesExtension
+    as DefaultAttributes;
+use League\CommonMark\Extension\DescriptionList\DescriptionListExtension
+    as DescriptionList;
+use League\CommonMark\Extension\DisallowedRawHtml\DisallowedRawHtmlExtension
+    as DisallowedHtml;
+use League\CommonMark\Extension\ExternalLink\ExternalLinkExtension
+    as ExternalLinks;
 use League\CommonMark\Extension\Footnote\FootnoteExtension as Footnotes;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension as Gfm;
-use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension as HeaddingPermalinks;
+use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension
+    as HeaddingPermalinks;
 use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension as InlinesOnly;
 use League\CommonMark\Extension\Mention\MentionExtension as Mentions;
-use League\CommonMark\Extension\Strikethrough\StrikethroughExtension as Strikethroughs;
+use League\CommonMark\Extension\Strikethrough\StrikethroughExtension
+    as Strikethroughs;
 use League\CommonMark\Extension\Table\TableExtension as Tables;
-use League\CommonMark\Extension\TableOfContents\TableOfContentsExtension as TableOfContents;
+use League\CommonMark\Extension\TableOfContents\TableOfContentsExtension
+    as TableOfContents;
 use League\CommonMark\Extension\TaskList\TaskListExtension as TaskLists;
 use League\CommonMark\Extension\SmartPunct\SmartPunctExtension as SmartPunct;
 
 class FluentCommonMark implements ConverterInterface
 {
+    /**
+     * @var Environment
+     */
     private $environment;
 
-    private $config;
-
-    public static function create(): FluentCommonMark
+    public static function create(): static
     {
-        return new FluentCommonMark();
+        return new static();
+    }
+
+    final public function __construct()
+    {
     }
 
     /**
@@ -60,15 +74,13 @@ class FluentCommonMark implements ConverterInterface
         // Do nothing
     }
 
-    public function withEnvironment(
-        EnvironmentInterface $environment
-    ): FluentCommonMark {
-        $new = clone $this;
-        $new->environment = $environment;
-        return $new;
+    public function withEnvironment(Environment $environment): static
+    {
+        $this->environment = $environment;
+        return $this;
     }
 
-    public function getEnvironment(): EnvironmentInterface
+    public function getEnvironment(): Environment
     {
         if ($this->environment === null) {
             $this->environment = new Environment();
@@ -76,15 +88,13 @@ class FluentCommonMark implements ConverterInterface
         return $this->environment;
     }
 
-    public function withConfig(array $config = []): FluentCommonMark
+    /**
+     * @param  array<string, mixed> $config [description]
+     */
+    public function withConfig(array $config = []): static
     {
-        if ($this->config === null) {
-            $this->config = $this->getConfiguration();
-        }
-
-        $new = clone $this;
-        $new->config = $this->getEnvironment()->mergeConfig($config);
-        return $new;
+        $this->getEnvironment()->mergeConfig($config);
+        return $this;
     }
 
     public function getConfiguration(): ConfigurationInterface
@@ -92,13 +102,15 @@ class FluentCommonMark implements ConverterInterface
         return $this->getEnvironment()->getConfiguration();
     }
 
-    public function addExtension(
-        ExtensionInterface $extension
-    ): FluentCommonMark {
+    public function addExtension(ExtensionInterface $extension): static
+    {
         $this->getEnvironment()->addExtension($extension);
         return $this;
     }
 
+    /**
+     * @return ExtensionInterface[] [description]
+     */
     public function getExtensions(): iterable
     {
         return $this->getEnvironment()->getExtensions();
@@ -116,43 +128,45 @@ class FluentCommonMark implements ConverterInterface
         return $this->convertToHtml($markdown);
     }
 
-    private function addExtensionWithConfig(string $key, array $config = [])
-    {
-        $new = clone $this;
-        if (count($config) > 0) {
-            $new = $this->withConfig([$key => $config]);
-        }
-        return $new;
+    /**
+     * @param string $key    [description]
+     * @param  array<string, mixed> $config [description]
+     */
+    private function addExtensionWithConfig(
+        string $key,
+        array $config = []
+    ): static {
+        return $this->withConfig([$key => $config]);
     }
 
     /*******************************************/
     /**         CommonMark Extensions         **/
     /*******************************************/
 
-    public function frontMatter(): FluentCommonMark
+    public function frontMatter(): static
     {
         return $this->addExtension(new FrontMatter());
     }
 
-    public function attributes(): FluentCommonMark
+    public function attributes(): static
     {
         return $this->addExtension(new Attributes());
     }
 
-    public function autoLink(): FluentCommonMark
+    public function autoLink(): static
     {
         return $this->addExtension(new Autolink());
     }
 
-    public function commonMarkCore(): FluentCommonMark
+    public function commonMarkCore(): static
     {
         return $this->addExtension(new CoreExtension());
     }
 
     /**
-     * @param  array<mixed> $config [description]
+     * @param  array<string, mixed> $config [description]
      */
-    public function defaultAttributes(array $config = []): FluentCommonMark
+    public function defaultAttributes(array $config = []): static
     {
         if (count($config) === 0) {
             return $this->addExtension(new DefaultAttributes());
@@ -161,28 +175,29 @@ class FluentCommonMark implements ConverterInterface
             ->addExtension(new DefaultAttributes());
     }
 
-    public function descriptionLists(): FluentCommonMark
+    public function descriptionLists(): static
     {
         return $this->addExtension(new DescriptionList());
     }
 
     /**
-     * @param array<string> $tags [description]
+     * @param  array<string, mixed> $config [description]
      */
-    public function disallowedRawHtml(array $config = []): FluentCommonMark
+    public function disallowedRawHtml(array $config = []): static
     {
         if (count($config) === 0) {
             return $this->addExtension(new DisallowedHtml());
         }
         return $this->addExtensionWithConfig(
-            'disallowed_raw_html', $config
+            'disallowed_raw_html',
+            $config
         )->addExtension(new DisallowedHtml());
     }
 
     /**
-     * @param array<mixed> $config [description]
+     * @param  array<string, mixed> $config [description]
      */
-    public function externalLinks(array $config = []): FluentCommonMark
+    public function externalLinks(array $config = []): static
     {
         if (count($config) === 0) {
             return $this->addExtension(new ExternalLinks());
@@ -192,9 +207,9 @@ class FluentCommonMark implements ConverterInterface
     }
 
     /**
-     * @param array<mixed> $config [description]
+     * @param  array<string, mixed> $config [description]
      */
-    public function footnotes(array $config = []): FluentCommonMark
+    public function footnotes(array $config = []): static
     {
         if (count($config) === 0) {
             return $this->addExtension(new Footnotes());
@@ -203,55 +218,54 @@ class FluentCommonMark implements ConverterInterface
             ->addExtension(new Footnotes());
     }
 
-    public function gitHubFlavoredMarkdown(): FluentCommonMark
+    public function gitHubFlavoredMarkdown(): static
     {
         return $this->addExtension(new Gfm());
     }
 
     /**
-     * @param array<mixed> $config [description]
+     * @param  array<string, mixed> $config [description]
      */
-    public function headingPermalinks(array $config = []): FluentCommonMark
+    public function headingPermalinks(array $config = []): static
     {
         if (count($config) === 0) {
-            return $this->addExtension(new headingPermalinks());
+            return $this->addExtension(new HeaddingPermalinks());
         }
         return $this->addExtensionWithConfig('heading_permalink', $config)
-            ->addExtension(new headingPermalinks());
+            ->addExtension(new HeaddingPermalinks());
     }
 
-    public function inlinesOnly(): FluentCommonMark
+    public function inlinesOnly(): static
     {
         return $this->addExtension(new InlinesOnly());
     }
 
     /**
-     * @param array<mixed> $config [description]
+     * @param  array<string, mixed> $config [description]
      */
-    public function mentions(array $config = []): FluentCommonMark
+    public function mentions(array $config = []): static
     {
         if (count($config) === 0) {
             return $this->addExtension(new Mentions());
         }
-        return $this->addExtensionWithConfig($config)
+        return $this->addExtensionWithConfig('mentions', $config)
             ->addExtension(new Mentions());
     }
 
-    public function strikethroughs(): FluentCommonMark
+    public function strikethroughs(): static
     {
         return $this->addExtension(new Strikethroughs());
     }
 
-    public function tables(): FluentCommonMark
+    public function tables(): static
     {
         return $this->addExtension(new Tables());
     }
 
     /**
-     * @param array<mixed> $config
-     * @param array<mixed> $headingPermalinksConfig
+     * @param  array<string, mixed> $config [description]
      */
-    public function tableOfContents(array $config = [])
+    public function tableOfContents(array $config = []): static
     {
         if (count($config) === 0) {
             return $this->addExtension(new TableOfContents());
@@ -260,20 +274,20 @@ class FluentCommonMark implements ConverterInterface
             ->addExtension(new TableOfContents());
     }
 
-    public function taskLists(): FluentCommonMark
+    public function taskLists(): static
     {
         return $this->addExtension(new TaskLists());
     }
 
     /**
-     * @param array<mixed> $config [description]
+     * @param  array<string, mixed> $config [description]
      */
-    public function smartPunctuation(array $config = []): FluentCommonMark
+    public function smartPunctuation(array $config = []): static
     {
         if (count($config) === 0) {
             return $this->addExtension(new SmartPunct());
         }
-        return $this->addExtensionWithConfig($config)
+        return $this->addExtensionWithConfig('smartpunct', $config)
             ->addExtension(new SmartPunct());
     }
 }

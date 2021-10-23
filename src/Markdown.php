@@ -12,16 +12,14 @@ use Eightfold\CommonMarkAbbreviations\AbbreviationExtension as Abbreviations;
 
 class Markdown extends FluentCommonMark
 {
-    public static function create(): Markdown
+    public static function create(): static
     {
-        $instance = new Markdown();
-        $instance = $instance->commonMarkCore();
-        $instance = $instance->withConfig([
+        $instance = new static();
+        return $instance->commonMarkCore()->withConfig([
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
             'max_nesting_level' => 100
         ]);
-        return $instance;
     }
 
     private bool $minified = false;
