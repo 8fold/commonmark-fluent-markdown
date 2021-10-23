@@ -37,7 +37,7 @@ test('Markdown is reusable', function() {
     )->toBeArray()->toBeEmpty();
 
     expect(
-        $markdownConverter->theContent(<<<md
+        $markdownConverter->theBody(<<<md
             ---
             title: Hello
             ---
@@ -426,7 +426,7 @@ test('Markdown can convert to HTML', function() {
 
 test('Markdown can initialize with string', function() {
     expect(
-        Markdown::create('# Hello, World!')->theContent()
+        Markdown::create('# Hello, World!')->theBody()
     )->toBe(
         '# Hello, World!'
     );

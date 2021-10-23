@@ -17,7 +17,12 @@ class Markdown implements MarkdownConverterInterface
     use ExtensionsCommonMark;
     use ExtensionsEightfold;
 
+    /**
+     * @deprecated Use `$body` instead
+     */
     private string $content = '';
+
+    private string $body = '';
 
     private bool $minified = false;
 
@@ -28,7 +33,7 @@ class Markdown implements MarkdownConverterInterface
 
     public function __construct(string $content = '')
     {
-        $this->content = $content;
+        $this->body = $content;
     }
 
     /**
@@ -51,13 +56,14 @@ class Markdown implements MarkdownConverterInterface
      */
     public function theFrontMatter(string $content = ''): array
     {
+        $body = $content;
         if (strlen($content) === 0) {
-            $content = $this->content;
+            $body = $this->body;
         }
 
         $frontMatterExtension = new FrontMatterExtension();
         $frontMatter = $frontMatterExtension->getFrontMatterParser()->parse(
-            $content . "\n"
+            $body . "\n"
         )->getFrontMatter();
 
         if ($frontMatter === null) {
@@ -66,11 +72,11 @@ class Markdown implements MarkdownConverterInterface
         return $frontMatter;
     }
 
-    public function theContent(string $content = ''): string
+    public function theBody(string $body = ''): string
     {
         $frontMatterExtension = new FrontMatterExtension();
         return $frontMatterExtension->getFrontMatterParser()->parse(
-            (strlen($content) === 0) ? $this->content : $content
+            (strlen($body) === 0) ? $this->body : $body
         )->getContent();
     }
 
@@ -85,15 +91,12 @@ class Markdown implements MarkdownConverterInterface
 
         $converter = new MarkdownConverter($environment);
 
-        // if (strlen($content) > 0) {
-        //     return $converter->convertToHtml($content);
-        // }
-        return $converter->convertToHtml($this->theContent($content));
+        return $converter->convertToHtml($this->theBody($content));
     }
 
     public function convert(string $content = ''): string
     {
-        $html = $this->convertToHtml($this->theContent($content))->getContent();
+        $html = $this->convertToHtml($this->theBody($content))->getContent();
 
         if ($this->shouldBeMinified()) {
             return str_replace([
@@ -135,11 +138,19 @@ class Markdown implements MarkdownConverterInterface
     }
 
     /**
+     * @deprecated Use `theBody()` instead.
+     */
+    public function theContent(string $content = ''): string
+    {
+        return $this->theBody();
+    }
+
+    /**
      * @deprecated Use `theContent()` instead.
      */
     public function content(string $content = ''): string
     {
-        return $this->theContent($content);
+        return $this->theBody($content);
     }
 
     /**
