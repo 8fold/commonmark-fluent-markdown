@@ -122,10 +122,12 @@ print Markdown::create()
   ->abbreviations()
   ->convert($markdown);
 
-print Markdown::create()
+print FluentCommonMark::create()
+  ->commonMarkCore()
   ->gitHubFlavoredMarkdown()
   ->abbreviations()
-  ->convertToHtml($markdown);
+  ->convertToHtml($markdown)
+  ->getContent();
 ```
 
 The result:
