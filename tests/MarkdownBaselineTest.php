@@ -31,7 +31,7 @@ test('Is performant and small', function() {
     $elapsed = $endMs - $startMs;
     $ms      = $elapsed/1e+6;
 
-    expect($ms)->toBeLessThan(1.88);
+    expect($ms)->toBeLessThan(2.08);
 
     $used = $endMem - $startMem;
     $kb   = round($used/1024.2);
