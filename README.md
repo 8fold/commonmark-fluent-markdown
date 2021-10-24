@@ -14,6 +14,24 @@ composer require 8fold/commonmark-fluent-markdown
 
 ⚠️ Warning: Users of this library are responsible for sanitizing content.
 
+There are two entry classes:
+
+1. Markdown: Does not follow strictly follow conventions established by the [League CommonMark](https://commonmark.thephpleague.com).
+2. FluentCommonMark: Tries to mirror the conventions of League CommonMark in a fluent way.
+
+The naming convention for methods that are not part of the League CommonMark implementation follow the convention established by [PSR-7](https://www.php-fig.org/psr/psr-7/).
+
+Methods prefixed by the word `with` will return a new instance to facilitate immunitability.
+
+### Markdown
+
+The Markdown class makes some presumptions the FluentCommonMark class does not:
+
+1. You will be using the CommonMarkCoreExtension.
+2. There will always be the potential for front matter; therefore, the FrontMatterExtension will always be used to separate front matter from the body.
+
+The Markdown class uses the the default configuration provided by CommonMark with modifications recommended by the [security](https://commonmark.thephpleague.com/2.0/security/) page of the CommonMark documentation.
+
 Write some markdown:
 
 ```markdown
@@ -27,7 +45,7 @@ Pass the markdown into the `Markdown` class and ask for the `convertedContent`:
 ```php
 use Eightfold\Markdown\Markdown;
 
-print Markdown::create($markdown)->convertedContent();
+print Markdown::create()->convert($markdown);
 ```
 
 Output:
@@ -38,47 +56,44 @@ Output:
 
 ```
 
-You can also go straight to the output:
-
 ```php
 use Eightfold\Markdown\Markdown;
 
-print Markdown::create($markdown);
+print Markdown::create()->minified()->convert($markdown);
 ```
 
-Same output as before.
+```html
+<h1>Markdown</h1><p>Woohoo!</p>
+```
 
-### YAML front matter
-
-If you are using YAML front matter, you can access it at any time via the `frontMatter` method:
+You can have markdown that is nothing but front matter as well.
 
 ```markdown
 ---
-title: Front matter
+title: The title
 ---
-
-Some content.
 ```
-
-Getting the front matter:
 
 ```php
 use Eightfold\Markdown\Markdown;
 
-$frontMatter = Markdown::create($markdown)
-  ->frontMatter();
-
-var_dump($frontMatter);
-
-// output:
-// array(
-//   'title' => 'Front matter'
-// )
+print Markdown::create()->minified()->getFrontMatter($markdown);
 ```
 
-The native [CommonMark extension](https://commonmark.thephpleague.com/2.0/extensions/front-matter/)
-is used to accomplish this. However, for the purposes of Fluent Markdown, we do
-not characterize it the same way. This returns metadata, not rendered HTML.
+Output:
+
+```php
+[
+  'title' => 'The title'
+]
+
+```
+
+The Mardkown extends the FluentCommonMark class.
+
+### FluentMarkdown
+
+The FluentMarkdown class is designed to mimic the behavior and feel of the CommonMark library. There are additional methods in place to facilitate the fully fluent nature of this library.
 
 ### Extensions
 
@@ -99,15 +114,25 @@ Setting the extensions and printing the result:
 
 ```php
 use Eightfold\Markdown\Markdown;
+use Eightfold\Markdown\FluentCommonMark;
 
-print Markdown::create($markdown)
+print Markdown::create()
+  ->minified()
   ->gitHubFlavoredMarkdown()
-  ->abbreviations();
+  ->abbreviations()
+  ->convert($markdown);
+
+print Markdown::create()
+  ->gitHubFlavoredMarkdown()
+  ->abbreviations()
+  ->convertToHtml($markdown);
 ```
 
 The result:
 
 ```html
+<p><del>strikethrough from GitHub Flavored Markdown</del></p><p>An <abbr title="abbreviation">abbr</abbr> from 8fold Abbreviations.</p>
+
 <p><del>strikethrough from GitHub Flavored Markdown</del></p>
 <p>An <abbr title="abbreviation">abbr</abbr> from 8fold Abbreviations.</p>
 ```
@@ -118,65 +143,12 @@ If the [extension accepts a configuration](https://commonmark.thephpleague.com/2
 use Eightfold\Markdown\Markdown;
 
 print Markdown::create($markdown)
-  ->disallowedRawHtml(['div']);
+  ->disallowedRawHtml([
+    'disallowed_tags' => ['div']
+  ]);
 ```
 
 Not passing in a configuration results in using the default established by the CommonMark library.
-
-### Fluent API
-
-The non-extension-related fluent API methods can be found in the
-[`FluentApi` trait](https://github.com/8fold/commonmark-fluent-markdown/blob/main/src/FluentApi.php).
-
-The primary capabilities afforded by the fluent API are:
-
-- adding or modifying a CommonMark-compliant configuration and
-- adding or resetting extensions (if not using the fluent API extension methods).
-
-Note: Adding extensions works differently than you would with CommonMark. First, you can add more than one extension at a time. Second, Fluent Markdown takes the full class name, not an instance of the class; in keeping with our desire to be just-in-time and lazy.
-
-```php
-use Eightfold\Markdown\Markdown;
-
-print Markdown::create($markdown)
-  ->addExtensions(
-    \League\CommonMark\Extension\Mention\MentionExtension::class,
-    '\Eightfold\CommonMarkAbbreviations\AbbreviationExtension'
-  );
-```
-
-### Minified output
-
-The output of CommonMark tends to render each block on a new line.
-
-```markdown
-Block 1
-
-Block 2
-```
-
-Output:
-
-```html
-<p>Block 1</p>
-<p>Block 2</p>
-```
-
-In keeping with 8fold [XML Builder](https://github.com/8fold/php-xml-builder/tree/0.6.0) and [HTML Builder](https://github.com/8fold/php-html-builder/tree/0.5.1), which render XML and HTML as a flat string, Fluent Markdown provides the `minified` method to accomplish the same:
-
-```php
-use Eightfold\Markdown\Markdown;
-
-print Markdown::create($markdown)->minified();
-```
-
-Output:
-
-```html
-<p>Block 1</p><p>Block 2</p>
-```
-
-For longer documents the removal of tabs and carriage returns can add up to quite a bit in the response.
 
 ## Details
 

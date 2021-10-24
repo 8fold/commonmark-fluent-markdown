@@ -4,66 +4,40 @@ declare(strict_types=1);
 
 namespace Eightfold\Markdown;
 
-use League\CommonMark\MarkdownConverterInterface;
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Output\RenderedContentInterface;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use Eightfold\Markdown\FluentCommonMark;
+
 use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
-use League\CommonMark\MarkdownConverter;
 
-class Markdown implements MarkdownConverterInterface
+use Eightfold\CommonMarkAbbreviations\AbbreviationExtension as Abbreviations;
+
+class Markdown extends FluentCommonMark
 {
-    use FluentApi;
-    use ExtensionsCommonMark;
-    use ExtensionsEightfold;
-
-    /**
-     * @deprecated Use `$body` instead
-     */
-    private string $content = '';
-
-    private string $body = '';
+    public static function create(): static
+    {
+        $instance = new static();
+        return $instance->commonMarkCore()->withConfig([
+            'html_input' => 'strip',
+            'allow_unsafe_links' => false,
+            'max_nesting_level' => 100
+        ]);
+    }
 
     private bool $minified = false;
 
-    public static function create(string $content = ''): Markdown
+    public function minified(): Markdown
     {
-        return new Markdown($content);
-    }
-
-    public function __construct(string $content = '')
-    {
-        $this->body = $content;
+        $this->minified = true;
+        return $this;
     }
 
     /**
      * @return array<mixed> [description]
      */
-    public function theConfig(): array
+    public function getFrontMatter(string $markdown = ''): array
     {
-        if (empty($this->config)) {
-            $this->config = [
-                'html_input' => 'strip',
-                'allow_unsafe_links' => false,
-                'max_nesting_level' => 50
-            ];
-        }
-        return $this->config;
-    }
-
-    /**
-     * @return array<mixed> [description]
-     */
-    public function theFrontMatter(string $content = ''): array
-    {
-        $body = $content;
-        if (strlen($content) === 0) {
-            $body = $this->body;
-        }
-
         $frontMatterExtension = new FrontMatterExtension();
         $frontMatter = $frontMatterExtension->getFrontMatterParser()->parse(
-            $body . "\n"
+            $markdown . "\n"
         )->getFrontMatter();
 
         if ($frontMatter === null) {
@@ -72,33 +46,19 @@ class Markdown implements MarkdownConverterInterface
         return $frontMatter;
     }
 
-    public function theBody(string $body = ''): string
+    public function getBody(string $markdown = ''): string
     {
         $frontMatterExtension = new FrontMatterExtension();
-        return $frontMatterExtension->getFrontMatterParser()->parse(
-            (strlen($body) === 0) ? $this->body : $body
-        )->getContent();
+        return $frontMatterExtension->getFrontMatterParser()->parse($markdown)
+            ->getContent();
     }
 
-    public function convertToHtml(string $content = ''): RenderedContentInterface
+    public function convert(string $markdown = ''): string
     {
-        $environment = new Environment($this->theConfig());
-        $environment->addExtension(new CommonMarkCoreExtension());
+        $markdown = $this->getBody($markdown);
+        $html = parent::convertToHtml($markdown)->getContent();
 
-        foreach ($this->theExtensions() as $extensionClass) {
-            $environment->addExtension(new $extensionClass());
-        }
-
-        $converter = new MarkdownConverter($environment);
-
-        return $converter->convertToHtml($this->theBody($content));
-    }
-
-    public function convert(string $content = ''): string
-    {
-        $html = $this->convertToHtml($this->theBody($content))->getContent();
-
-        if ($this->shouldBeMinified()) {
+        if ($this->minified) {
             return str_replace([
                 "\t",
                 "\n",
@@ -110,72 +70,8 @@ class Markdown implements MarkdownConverterInterface
         return $html;
     }
 
-    public function __toString(): string
+    public function abbreviations(): Markdown
     {
-        return $this->convert();
-    }
-
-    private function shouldBeMinified(): bool
-    {
-        return $this->minified;
-    }
-
-    /**
-     * @return array<string> [description]
-     */
-    private function theExtensions(): array
-    {
-        return $this->extensions;
-    }
-
-    /**
-     * @deprecated use `theFrontMatter()` instead.
-     * @return array<mixed>
-     */
-    public function frontMatter(string $content = ''): array
-    {
-        return $this->theFrontMatter($content);
-    }
-
-    /**
-     * @deprecated Use `theBody()` instead.
-     */
-    public function theContent(string $content = ''): string
-    {
-        return $this->theBody();
-    }
-
-    /**
-     * @deprecated Use `theContent()` instead.
-     */
-    public function content(string $content = ''): string
-    {
-        return $this->theBody($content);
-    }
-
-    /**
-     * @deprecated Use `convert()` instead.
-     */
-    public function convertedContent(string $content = ''): string
-    {
-        return $this->convert($content);
-    }
-
-    /**
-     * @deprecated Use `theConfig()` instead.
-     * @return array<mixed>
-     */
-    private function configuration(): array
-    {
-        return $this->theConfig();
-    }
-
-    /**
-     * @deprecated Use `theExtensions()` instead.
-     * @return array<string>
-     */
-    private function extensions(): array
-    {
-        return $this->theExtensions();
+        return $this->addExtension(new Abbreviations());
     }
 }
