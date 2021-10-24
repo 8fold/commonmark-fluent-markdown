@@ -33,7 +33,7 @@ test('Is performant and small', function() {
     $used = $endMem - $startMem;
     $kb   = round($used/1024.2);
 
-    expect($kb)->toBeLessThan(1765);
+    expect($kb)->toBeLessThan(1950);
 })->group('commonmark');
 
 test('Respects configured disallowed raw html', function() {
