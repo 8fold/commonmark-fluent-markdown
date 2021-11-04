@@ -64,3 +64,27 @@ test('Markdown configured with greater security by default', function() {
         html
     );
 })->group('markdown');
+
+test('Minify with code block', function() {
+    expect(
+        Markdown::create()->minified()->convert(<<<md
+            ```
+            this is a code block
+
+            with multiple lines
+
+            it should not be minified
+            ```
+            md
+        )
+    )->toBe(<<<html
+        <pre><code>this is a code block
+
+        with multiple lines
+
+        it should not be minified
+        </code></pre>
+
+        html
+    );
+});
