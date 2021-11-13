@@ -86,7 +86,7 @@ class Markdown extends FluentCommonMark
             return $this->addExtension(new HeadingPermalink());
         }
         return $this->addExtensionWithConfig(
-            'accessible_heading_permalinks',
+            'accessible_heading_permalink',
             $config
         )->addExtension(new HeadingPermalink());
     }
