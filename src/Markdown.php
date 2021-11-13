@@ -9,6 +9,7 @@ use Eightfold\Markdown\FluentCommonMark;
 use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
 
 use Eightfold\CommonMarkAbbreviations\AbbreviationExtension as Abbreviations;
+use Eightfold\CommonMarkAccessibleHeadingPermalink as HeadingPermalink;
 
 class Markdown extends FluentCommonMark
 {
@@ -73,5 +74,10 @@ class Markdown extends FluentCommonMark
     public function abbreviations(): Markdown
     {
         return $this->addExtension(new Abbreviations());
+    }
+
+    public function accessibleHeadingPermalinks(): Markdown
+    {
+        return $this->addExtension(new HeadingPermalink());
     }
 }
