@@ -9,7 +9,8 @@ use Eightfold\Markdown\FluentCommonMark;
 use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
 
 use Eightfold\CommonMarkAbbreviations\AbbreviationExtension as Abbreviations;
-use Eightfold\CommonMarkAccessibleHeadingPermalink as HeadingPermalink;
+use Eightfold\CommonMarkAccessibleHeadingPermalink\HeadingPermalinkExtension
+    as HeadingPermalink;
 
 class Markdown extends FluentCommonMark
 {
