@@ -2,7 +2,7 @@
 
 use Eightfold\Markdown\Markdown;
 
-test('Is performant and small', function() {
+test('is performant and small', function() {
     $startMs = hrtime(true);
 
     $startMem = memory_get_usage();
@@ -65,7 +65,7 @@ test('Markdown configured with greater security by default', function() {
     );
 })->group('markdown');
 
-test('Minify with code block', function() {
+test('minify with code block', function() {
     expect(
         Markdown::create()->minified()->convert(<<<md
             ```
@@ -84,6 +84,26 @@ test('Minify with code block', function() {
 
         it should not be minified
         </code></pre>
+
+        html
+    );
+});
+
+it('can use accessible heading permalinks', function() {
+    expect(
+        Markdown::create()->accessibleHeadingPermalinks([
+            'min_heading_level' => 2
+        ])->convert(<<<md
+            # A word of caution
+
+            Something
+
+            ## Another word of caution
+            md
+        )
+    )->toBe(<<<html
+        <h1>A word of caution</h1>
+        <p>Something</p><div is="heading-wrapper"><h2 id="another-word-of-caution">Another word of caution</h2><a href="#another-word-of-caution"><span aria-hidden="true">¶</span><span>Section titled Another word of caution</span></a></div>
 
         html
     );
