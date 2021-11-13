@@ -132,7 +132,7 @@ class FluentCommonMark implements ConverterInterface
      * @param string $key    [description]
      * @param  array<string, mixed> $config [description]
      */
-    private function addExtensionWithConfig(
+    protected function addExtensionWithConfig(
         string $key,
         array $config = []
     ): static {

@@ -77,8 +77,17 @@ class Markdown extends FluentCommonMark
         return $this->addExtension(new Abbreviations());
     }
 
-    public function accessibleHeadingPermalinks(): Markdown
+    /**
+     * @param  array<string, mixed> $config [description]
+     */
+    public function accessibleHeadingPermalinks(array $config = []): Markdown
     {
-        return $this->addExtension(new HeadingPermalink());
+        if (count($config) === 0) {
+            return $this->addExtension(new HeadingPermalink());
+        }
+        return $this->addExtensionWithConfig(
+            'accessible_heading_permalinks',
+            $config
+        )->addExtension(new HeadingPermalink());
     }
 }
