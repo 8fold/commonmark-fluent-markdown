@@ -2,6 +2,8 @@
 
 use Eightfold\Markdown\Markdown;
 
+use League\CommonMark\Extension\Attributes\AttributesExtension as Attributes;
+
 test('is performant and small', function() {
     $startMs = hrtime(true);
 
@@ -105,6 +107,63 @@ it('can use accessible heading permalinks', function() {
         <h1>A word of caution</h1>
         <p>Something</p><div is="heading-wrapper"><h2 id="another-word-of-caution">Another word of caution</h2><a href="#another-word-of-caution"><span aria-hidden="true">¶</span><span>Section titled Another word of caution</span></a></div>
 
+        html
+    );
+});
+
+it('can accept late extensions using add extensions', function() {
+    $converter = Markdown::create()->minified();
+
+    $converter = $converter->addExtension(new Attributes());
+
+    expect(
+        $converter->convert(<<<md
+            [Link text]('/test'){#id}
+            md
+        )
+    )->toBe(<<<html
+        <p><a id="id" href="'/test'">Link text</a></p>
+        html
+    );
+
+    $converter = Markdown::create()
+        ->minified()
+        ->smartPunctuation()
+        ->withConfig(['html_input' => 'allow'])
+        ->descriptionLists()
+        ->attributes()
+        ->abbreviations()
+        ->externalLinks([
+            'open_in_new_window' => true,
+            'internal_hosts' => 'joshbruce.com'
+        ])->accessibleHeadingPermalinks(
+            [
+                'min_heading_level' => 2,
+                'symbol' => '＃'
+            ],
+        );
+
+    expect(
+        $converter->convert(<<<md
+            [.ABBR](Abbreviation)
+            md
+        )
+    )->toBe(<<<html
+        <p><abbr title="Abbreviation">ABBR</abbr></p>
+        html
+    );
+
+    $converter = $converter->addExtension(new Attributes());
+
+    expect(
+        $converter->convert(<<<md
+            [.ABBR](Abbreviation)
+
+            [Link text]('/test'){#id}
+            md
+        )
+    )->toBe(<<<html
+        <p><abbr title="Abbreviation">ABBR</abbr></p><p><a id="id" href="'/test'">Link text</a></p>
         html
     );
 });
