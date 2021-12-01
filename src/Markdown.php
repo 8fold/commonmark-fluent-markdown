@@ -60,7 +60,7 @@ class Markdown extends FluentCommonMark
         $markdown = $this->getBody($markdown);
         $html = parent::convertToHtml($markdown)->getContent();
 
-        if ($this->minified and ! str_contains($html, '<pre><code>')) {
+        if ($this->minified and ! str_contains($html, '</code></pre>')) {
             return str_replace([
                 "\t",
                 "\n",

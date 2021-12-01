@@ -2,6 +2,8 @@
 
 use Eightfold\Markdown\Markdown;
 
+use League\CommonMark\Extension\Attributes\AttributesExtension as Attributes;
+
 test('is performant and small', function() {
     $startMs = hrtime(true);
 
@@ -86,6 +88,15 @@ test('minify with code block', function() {
         </code></pre>
 
         html
+    );
+
+    expect(
+        Markdown::create()->withConfig(['html_input' => 'allow'])
+            ->minified()->convert(
+                file_get_contents(__DIR__ . '/code-block-test.md')
+            )
+    )->toBe(
+        file_get_contents(__DIR__ . '/code-block-test.html')
     );
 });
 
