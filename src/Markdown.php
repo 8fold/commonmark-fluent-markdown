@@ -32,10 +32,7 @@ class Markdown extends FluentCommonMark
         return $this;
     }
 
-    /**
-     * @return array<mixed> [description]
-     */
-    public function getFrontMatter(string $markdown = ''): array
+    public function getFrontMatter(string $markdown = ''): mixed
     {
         $frontMatterExtension = new FrontMatterExtension();
         $frontMatter = $frontMatterExtension->getFrontMatterParser()->parse(
