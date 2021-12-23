@@ -1,15 +1,30 @@
 <?php
+declare(strict_types=1);
 
-use Eightfold\Markdown\Markdown;
+namespace Eightfold\Markdown\Tests;
+
+use PHPUnit\Framework\TestCase;
 
 use League\CommonMark\Extension\Attributes\AttributesExtension as Attributes;
 
-test('is performant and small', function() {
-    $startMs = hrtime(true);
+use Eightfold\Markdown\Markdown;
 
-    $startMem = memory_get_usage();
+class MarkdownBaselineTest extends TestCase
+{
+    /**
+     * @test
+     */
+    public function is_performant_and_small(): void // phpcs:ignore
+    {
+        $startMs = hrtime(true);
 
-    $html = Markdown::create()->descriptionLists()->minified()->convert(<<<md
+        $startMem = memory_get_usage();
+
+        $expected = <<<html
+            <dl><dt>Apple</dt><dd>Pomaceous fruit of plants of the genus Malus in the family Rosaceae.</dd><dd>An American computer company.</dd><dt>Orange</dt><dd>The fruit of an evergreen tree of the genus Citrus.</dd></dl>
+            html;
+
+        $result = Markdown::create()->descriptionLists()->minified()->convert(<<<md
             Apple
             :   Pomaceous fruit of plants of the genus Malus in the family Rosaceae.
             :   An American computer company.
@@ -19,57 +34,75 @@ test('is performant and small', function() {
             md
         );
 
-    $endMs = hrtime(true);
+        $endMs = hrtime(true);
 
-    $endMem = memory_get_usage();
+        $endMem = memory_get_usage();
 
-    expect(
-        $html
-    )->toBe(<<<html
-        <dl><dt>Apple</dt><dd>Pomaceous fruit of plants of the genus Malus in the family Rosaceae.</dd><dd>An American computer company.</dd><dt>Orange</dt><dd>The fruit of an evergreen tree of the genus Citrus.</dd></dl>
-        html
-    );
+        $this->assertSame($expected, $result);
 
-    $elapsed = $endMs - $startMs;
-    $ms      = $elapsed/1e+6;
+        $elapsed = $endMs - $startMs;
+        $ms      = $elapsed/1e+6;
 
-    expect($ms)->toBeLessThan(3.59);
+        $this->assertLessThan(3.59, $ms);
 
-    $used = $endMem - $startMem;
-    $kb   = round($used/1024.2);
+        $used = $endMem - $startMem;
+        $kb   = round($used/1024.2);
 
-    expect($kb)->toBeLessThan(1855);
-})->group('markdown');
+        $this->assertLessThan(1855, $kb);
+    }
 
-test('Markdown has abbreviations', function() {
-    expect(
-        Markdown::create()->abbreviations()->minified()->convert(<<<md
+    /**
+     * @test
+     */
+    public function markdown_has_abbreviations(): void // phpcs:ignore
+    {
+        $expected = <<<html
+            <p><abbr title="eightfold">8fold</abbr></p>
+            html;
+
+        $result = Markdown::create()->abbreviations()->minified()->convert(<<<md
             [.8fold](eightfold)
             md
-        )
-    )->toBe(<<<html
-        <p><abbr title="eightfold">8fold</abbr></p>
-        html
-    );
-})->group('markdown');
+        );
 
-test('Markdown configured with greater security by default', function() {
-    // Max nesting level not tested
-    expect(
-        Markdown::create()->minified()->convert(<<<md
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function markdown_configured_with_greater_security_by_default(): void // phpcs:ignore
+    {
+        $expected = <<<html
+            <p><a>unsafe link</a></p>
+            html;
+
+        $result = Markdown::create()->minified()->convert(<<<md
             <script>alert("Hello XSS!");</script>
 
             [unsafe link](data:,Hello%2C%20World%21)
-            md)
-    )->toBe(<<<html
-        <p><a>unsafe link</a></p>
-        html
-    );
-})->group('markdown');
+            md
+        );
 
-test('minify with code block', function() {
-    expect(
-        Markdown::create()->minified()->convert(<<<md
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function minify_handles_code_block(): void // phpcs:ignore
+    {
+        $expected = <<<html
+            <pre><code>this is a code block
+
+            with multiple lines
+
+            it should not be minified
+            </code></pre>
+
+            html;
+
+        $result = Markdown::create()->minified()->convert(<<<md
             ```
             this is a code block
 
@@ -78,44 +111,42 @@ test('minify with code block', function() {
             it should not be minified
             ```
             md
-        )
-    )->toBe(<<<html
-        <pre><code>this is a code block
+        );
 
-        with multiple lines
+        $this->assertSame($expected, $result);
 
-        it should not be minified
-        </code></pre>
+        $expected = file_get_contents(__DIR__ . '/code-block-test.html');
 
-        html
-    );
-
-    expect(
-        Markdown::create()->withConfig(['html_input' => 'allow'])
+        $result = Markdown::create()->withConfig(['html_input' => 'allow'])
             ->minified()->convert(
                 file_get_contents(__DIR__ . '/code-block-test.md')
-            )
-    )->toBe(
-        file_get_contents(__DIR__ . '/code-block-test.html')
-    );
-});
+            );
 
-it('can use accessible heading permalinks', function() {
-    expect(
-        Markdown::create()->accessibleHeadingPermalinks([
-            'min_heading_level' => 2
-        ])->convert(<<<md
-            # A word of caution
+        $this->assertSame($expected, $result);
+    }
 
-            Something
+    /**
+     * @test
+     */
+    public function can_use_accessible_heading_permalinks(): void // phpcs:ignore
+    {
+        $expected = <<<html
+            <h1>A word of caution</h1>
+            <p>Something</p><div is="heading-wrapper"><h2 id="another-word-of-caution">Another word of caution</h2><a href="#another-word-of-caution"><span aria-hidden="true">¶</span><span>Section titled Another word of caution</span></a></div>
 
-            ## Another word of caution
-            md
-        )
-    )->toBe(<<<html
-        <h1>A word of caution</h1>
-        <p>Something</p><div is="heading-wrapper"><h2 id="another-word-of-caution">Another word of caution</h2><a href="#another-word-of-caution"><span aria-hidden="true">¶</span><span>Section titled Another word of caution</span></a></div>
+            html;
 
-        html
-    );
-});
+        $result = Markdown::create()->accessibleHeadingPermalinks([
+                'min_heading_level' => 2
+            ])->convert(<<<md
+                # A word of caution
+
+                Something
+
+                ## Another word of caution
+                md
+            );
+
+        $this->assertSame($expected, $result);
+    }
+}
