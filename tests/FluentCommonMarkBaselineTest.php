@@ -21,7 +21,7 @@ class FluentCommonMarkBaselineTest extends TestCase
 
         $startMem = memory_get_usage();
 
-        $html = FluentCommonMark::create()->commonMarkCore()
+        $result = FluentCommonMark::create()->commonMarkCore()
             ->descriptionLists()->convertToHtml(<<<md
                 Apple
                 :   Pomaceous fruit of plants of the genus Malus in the family Rosaceae.
@@ -179,76 +179,89 @@ class FluentCommonMarkBaselineTest extends TestCase
 
         $this->assertSame($expected, $result);
     }
+
+    /**
+     * @test
+     */
+    public function can_convert_to_html(): void // phpcs:ignore
+    {
+        $expected = <<<html
+            <h1>Hello, World!</h1>
+
+            html;
+
+        $result = FluentCommonMark::create()
+            ->commonMarkCore()
+            ->convertToHtml('# Hello, World!')->getContent();
+
+        $this->assertSame($expected, $result);
+
+         $expected = <<<html
+            <hr />
+            <h2>front-matter: Hello</h2>
+            <p>World!</p>
+
+            html;
+
+        $result = FluentCommonMark::create()
+            ->commonMarkCore()
+            ->convertToHtml(<<<md
+                ---
+                front-matter: Hello
+                ---
+
+                World!
+                md
+            )->getContent();
+
+        $this->assertSame($expected, $result);
+
+        $expected = <<<html
+            <p>World!</p>
+
+            html;
+
+        $result = FluentCommonMark::create()
+            ->commonMarkCore()
+            ->frontMatter()
+            ->convertToHtml(<<<md
+                ---
+                front-matter: Hello
+                ---
+
+                World!
+                md
+            )->getContent();
+
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function can_set_environment_and_config(): void // phpcs:ignore
+    {
+        $sut = FluentCommonMark::create();
+
+        $this->assertInstanceOf(
+            ConfigurationInterface::class,
+            $sut->getConfiguration()
+        );
+
+        $this->assertInstanceOf(
+            Environment::class,
+            $sut->getEnvironment()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function has_static_initializer(): void // phpcs:ignore
+    {
+        $this->assertInstanceOf(
+            FluentCommonMark::class,
+            FluentCommonMark::create()
+        );
+    }
 }
-// test('Can convert to HTML', function() {
-//     expect(
-//         FluentCommonMark::create()
-//             ->commonMarkCore()
-//             ->convertToHtml('# Hello, World!')->getContent()
-//     )->toBe(<<<html
-//         <h1>Hello, World!</h1>
-//
-//         html
-//     );
-//
-//     expect(
-//         FluentCommonMark::create()
-//             ->commonMarkCore()
-//             ->convertToHtml(<<<md
-//                 ---
-//                 front-matter: Hello
-//                 ---
-//
-//                 World!
-//                 md
-//             )->getContent()
-//     )->toBe(<<<html
-//         <hr />
-//         <h2>front-matter: Hello</h2>
-//         <p>World!</p>
-//
-//         html
-//     );
-//
-//     expect(
-//         FluentCommonMark::create()
-//             ->commonMarkCore()
-//             ->frontMatter()
-//             ->convertToHtml(<<<md
-//                 ---
-//                 front-matter: Hello
-//                 ---
-//
-//                 World!
-//                 md
-//             )->getContent()
-//     )->toBe(<<<html
-//         <p>World!</p>
-//
-//         html
-//     );
-// })->group('commonmark');
-//
-// test('Can set environment and configuration', function() {
-//     $sut = FluentCommonMark::create();
-//
-//     expect(
-//         $sut->getConfiguration()
-//     )->toBeInstanceOf(
-//         ConfigurationInterface::class
-//     );
-//
-//     expect(
-//         $sut->getEnvironment()
-//     )->toBeInstanceOf(
-//         Environment::class
-//     );
-// })->group('commonmark');
-//
-// test('Has static initializer', function() {
-//     expect(
-//         FluentCommonMark::create()
-//     )->toBeInstanceOf(
-//         FluentCommonMark::class
-//     );
-// })->group('commonmark');
