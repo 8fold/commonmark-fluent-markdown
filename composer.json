@@ -39,7 +39,7 @@
     "prod": "@production",
     "production": ["@style", "@stan", "@test"],
     "style": "./vendor/bin/phpcs --standard=phpcs.xml -p ./src",
-    "stan": "./vendor/bin/phpstan analyze",
+    "stan": "./vendor/bin/phpstan analyze --memory-limit 60M",
     "test": "./vendor/bin/phpunit"
   }
 }
