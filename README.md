@@ -91,11 +91,36 @@ Output:
 
 ```
 
-The Mardkown extends the FluentCommonMark class.
+The Markdown extends the FluentCommonMark class.
 
 ### FluentMarkdown
 
 The FluentMarkdown class is designed to mimic the behavior and feel of the CommonMark library. There are additional methods in place to facilitate the fully fluent nature of this library.
+
+### Container
+
+The Container class is a singleton that may contain one or more converter configurations.
+
+This is useful if you find yourself instantiating multiple markdown converters:
+
+1. With each server request.
+2. With the same configuration and options.
+
+By placing those converters in the Container, they only need to be instantiated once and you should see a performance increase by doing so.
+
+```
+Container::instance()->addConverter(
+	Markdown::create()->abbreviations()
+)->addConverter(
+	FluentCommonMark::create()->descriptionLists()
+);
+
+// Returns the Markdown instance (first converter in list)
+$html = Container::instance()->converter()->convert('');
+
+// Returns HTML converted by FluentCommonMark insance
+$html = Container::instance()->converter()->convertToHtml('');
+```
 
 ### Extensions
 
