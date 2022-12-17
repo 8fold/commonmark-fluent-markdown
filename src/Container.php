@@ -57,8 +57,12 @@ class Container
         return $this->converters;
     }
 
-    public function converter(int|string $at): MarkdownConverter|FluentCommonMark
-    {
+    public function converter(
+        int|string|null $at = null
+    ): MarkdownConverter|FluentCommonMark {
+        if ($at === null) {
+            return array_shift($this->converters);
+        }
         return $this->converters[$at];
     }
 
