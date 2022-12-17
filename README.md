@@ -21,7 +21,7 @@ There are two entry classes:
 
 The naming convention for methods that are not part of the League CommonMark implementation follow the convention established by [PSR-7](https://www.php-fig.org/psr/psr-7/).
 
-Methods prefixed by the word `with` will return a new instance to facilitate immunitability.
+Methods prefixed by the word `with` will return a new instance to facilitate immutability.
 
 ### Markdown
 
@@ -31,6 +31,8 @@ The Markdown class makes some presumptions the FluentCommonMark class does not:
 2. There will always be the potential for front matter; therefore, the FrontMatterExtension will always be used to separate front matter from the body.
 
 The Markdown class uses the the default configuration provided by CommonMark with modifications recommended by the [security](https://commonmark.thephpleague.com/2.0/security/) page of the CommonMark documentation.
+
+The Markdown class also affords users the ability to use the [8fold CommonMark Abbreviations](https://github.com/8fold/commonmark-abbreviations) and [8fold CommonMark Accessible Heading Permalinks](https://github.com/8fold/commonmark-accessible-heading-permalinks) extensions whereas FluentCommonMark is strictly vanilla [League CommonMark](https://commonmark.thephpleague.com).
 
 Write some markdown:
 
