@@ -61,7 +61,11 @@ class Container
         int|string|null $at = null
     ): MarkdownConverter|FluentCommonMark {
         if ($at === null) {
-            return array_shift($this->converters);
+            $converter = array_shift($this->converters);
+            if ($converter === null) {
+                return MarkdownConverter::create();
+            }
+            return $converter;
         }
         return $this->converters[$at];
     }
