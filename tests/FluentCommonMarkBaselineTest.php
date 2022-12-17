@@ -39,7 +39,7 @@ class FluentCommonMarkBaselineTest extends TestCase
         $elapsed = $endMs - $startMs;
         $ms      = $elapsed/1e+6;
 
-        $this->assertLessThan(46, $ms);
+        $this->assertLessThan(54, $ms);
 
         $used = $endMem - $startMem;
         $kb   = round($used/1024.2);

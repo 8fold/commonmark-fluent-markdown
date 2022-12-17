@@ -5,9 +5,9 @@ namespace Eightfold\Markdown\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use League\CommonMark\Extension\Attributes\AttributesExtension as Attributes;
-
 use Eightfold\Markdown\Markdown;
+
+use League\CommonMark\Extension\Attributes\AttributesExtension as Attributes;
 
 class MarkdownBaselineTest extends TestCase
 {

@@ -21,7 +21,7 @@ There are two entry classes:
 
 The naming convention for methods that are not part of the League CommonMark implementation follow the convention established by [PSR-7](https://www.php-fig.org/psr/psr-7/).
 
-Methods prefixed by the word `with` will return a new instance to facilitate immunitability.
+Methods prefixed by the word `with` will return a new instance to facilitate immutability.
 
 ### Markdown
 
@@ -31,6 +31,8 @@ The Markdown class makes some presumptions the FluentCommonMark class does not:
 2. There will always be the potential for front matter; therefore, the FrontMatterExtension will always be used to separate front matter from the body.
 
 The Markdown class uses the the default configuration provided by CommonMark with modifications recommended by the [security](https://commonmark.thephpleague.com/2.0/security/) page of the CommonMark documentation.
+
+The Markdown class also affords users the ability to use the [8fold CommonMark Abbreviations](https://github.com/8fold/commonmark-abbreviations) and [8fold CommonMark Accessible Heading Permalinks](https://github.com/8fold/commonmark-accessible-heading-permalinks) extensions whereas FluentCommonMark is strictly vanilla [League CommonMark](https://commonmark.thephpleague.com).
 
 Write some markdown:
 
@@ -89,11 +91,36 @@ Output:
 
 ```
 
-The Mardkown extends the FluentCommonMark class.
+The Markdown extends the FluentCommonMark class.
 
 ### FluentMarkdown
 
 The FluentMarkdown class is designed to mimic the behavior and feel of the CommonMark library. There are additional methods in place to facilitate the fully fluent nature of this library.
+
+### Container
+
+The Container class is a singleton that may contain one or more converter configurations.
+
+This is useful if you find yourself instantiating multiple markdown converters:
+
+1. With each server request.
+2. With the same configuration and options.
+
+By placing those converters in the Container, they only need to be instantiated once and you should see a performance increase by doing so.
+
+```
+Container::instance()->addConverter(
+	Markdown::create()->abbreviations()
+)->addConverter(
+	FluentCommonMark::create()->descriptionLists()
+);
+
+// Returns the Markdown instance (first converter in list)
+$html = Container::instance()->converter()->convert('');
+
+// Returns HTML converted by FluentCommonMark insance
+$html = Container::instance()->converter()->convertToHtml('');
+```
 
 ### Extensions
 
