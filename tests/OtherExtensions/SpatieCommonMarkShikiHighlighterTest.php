@@ -32,13 +32,13 @@ class SpatieCommonMarkShikiHighlighterTest extends TestCase
         md;
 
         $environment = (new Environment())
-            ->addExtension(new CommonMarkCoreExtension())
-            ->addExtension(new HighlightCodeExtension($theme));
+            ->addExtension(new CommonMarkCoreExtension());
 
         $markdownConverter = new MarkdownConverter(environment: $environment);
 
         $result = $markdownConverter->convert($md);
 
+        // Should be false, yeah?
         $this->assertTrue(
             is_a($result, \League\CommonMark\Output\RenderedContent::class)
         );
@@ -46,6 +46,21 @@ class SpatieCommonMarkShikiHighlighterTest extends TestCase
         // convert() returning RenderedContent instance, convert to string.
         $result = (string) $result;
 
+        // Passes
+        $this->assertTrue(
+            str_starts_with($result, '<pre')
+        );
+
+        // Spatie highlighter
+        $environment = (new Environment())
+            ->addExtension(new CommonMarkCoreExtension())
+            ->addExtension(new HighlightCodeExtension($theme));
+
+        $markdownConverter = new MarkdownConverter(environment: $environment);
+
+        $result = (string) $markdownConverter->convert($md);
+
+        // Fails
         $this->assertTrue(
             str_starts_with($result, '<pre')
         );
