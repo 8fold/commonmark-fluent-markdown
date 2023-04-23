@@ -7,8 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 use Eightfold\Markdown\Markdown;
 
-use League\CommonMark\Extension\Attributes\AttributesExtension as Attributes;
-
 class MarkdownBaselineTest extends TestCase
 {
     /**
