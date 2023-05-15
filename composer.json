@@ -14,7 +14,8 @@
     "league/commonmark": "^2.0",
     "symfony/yaml": "^2.3 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
     "8fold/commonmark-abbreviations": "^1.2 || ^2.1",
-    "8fold/commonmark-accessible-heading-permalinks": "^1.0"
+    "8fold/commonmark-accessible-heading-permalinks": "^1.0",
+    "8fold/commonmark-partials": "^1.0"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.2.0",

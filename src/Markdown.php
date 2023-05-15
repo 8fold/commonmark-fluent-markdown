@@ -10,6 +10,7 @@ use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
 use Eightfold\CommonMarkAbbreviations\AbbreviationExtension as Abbreviations;
 use Eightfold\CommonMarkAccessibleHeadingPermalink\HeadingPermalinkExtension
     as HeadingPermalink;
+use Eightfold\CommonMarkPartials\PartialsExtension as Partials;
 
 class Markdown extends FluentCommonMark
 {
@@ -74,7 +75,7 @@ class Markdown extends FluentCommonMark
     }
 
     /**
-     * @param  array<string, mixed> $config [description]
+     * @param  array<string, mixed> $config
      */
     public function accessibleHeadingPermalinks(array $config = []): Markdown
     {
@@ -85,5 +86,19 @@ class Markdown extends FluentCommonMark
             'accessible_heading_permalink',
             $config
         )->addExtension(new HeadingPermalink());
+    }
+
+    /**
+     * @param  array<string, mixed> $config
+     */
+    public function partials(array $config = []): Markdown
+    {
+        if (count($config) === 0) {
+            return $this;
+        }
+        return $this->addExtensionWithConfig(
+            'partials',
+            $config
+        )->addExtension(new Partials());
     }
 }

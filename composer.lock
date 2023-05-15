@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b4dbc373e93411bccf81a4a05bad00c8",
+    "content-hash": "e941e22e63c3bc6d929921599cc4d2b5",
     "packages": [
         {
             "name": "8fold/commonmark-abbreviations",
@@ -117,6 +117,64 @@
                 }
             ],
             "time": "2022-07-23T20:52:09+00:00"
+        },
+        {
+            "name": "8fold/commonmark-partials",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/8fold/commonmark-partials.git",
+                "reference": "64e515a84cce382adca4608cc014c3d5a7e5520d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/8fold/commonmark-partials/zipball/64e515a84cce382adca4608cc014c3d5a7e5520d",
+                "reference": "64e515a84cce382adca4608cc014c3d5a7e5520d",
+                "shasum": ""
+            },
+            "require": {
+                "league/commonmark": "^2.3",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.7",
+                "phpunit/phpunit": "^9.5",
+                "squizlabs/php_codesniffer": "^3.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Eightfold\\CommonMarkPartials\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Bruce",
+                    "email": "josh@8fold.pro",
+                    "homepage": "https://joshbruce.com",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "An extension of PHP League's CommonMark library to enable partials.",
+            "support": {
+                "issues": "https://github.com/8fold/commonmark-partials/issues",
+                "source": "https://github.com/8fold/commonmark-partials/tree/1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/8fold",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/joshbruce",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-05-15T19:47:30+00:00"
         },
         {
             "name": "dflydev/dot-access-data",

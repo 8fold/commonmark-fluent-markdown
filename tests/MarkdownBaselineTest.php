@@ -149,4 +149,43 @@ class MarkdownBaselineTest extends TestCase
 
         $this->assertSame($expected, $result);
     }
+
+    /**
+     * @test
+     */
+    public function can_use_partials(): void // phpcs: ignore
+    {
+        $expected = <<<html
+        <p>This was created by a partial</p>
+
+        html;
+
+        $result = Markdown::create()->partials([
+            'partials' => [
+                'inject' => 'Eightfold\Markdown\Tests\Mocks\PartialMarkdown'
+            ]
+        ])->convert(<<<md
+            {!! inject !!}
+            md
+        );
+
+        $this->assertSame($expected, $result);
+
+        $expected = <<<html
+        <h1>This was created by a partial</h1>
+
+        html;
+
+        $result = Markdown::create()->withConfig(['html_input' => 'allow'])
+            ->partials([
+                'partials' => [
+                    'inject' => 'Eightfold\Markdown\Tests\Mocks\PartialHtml'
+                ]
+            ])->convert(<<<md
+                {!! inject !!}
+                md
+            );
+
+        $this->assertSame($expected, $result);
+    }
 }
