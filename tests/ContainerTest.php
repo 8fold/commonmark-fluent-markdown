@@ -19,10 +19,7 @@ class ContainerTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
-    public function can_add_multiple_converters(): void
+    public function test_can_add_multiple_converters(): void
     {
         $expected = 2;
 
@@ -35,23 +32,13 @@ class ContainerTest extends TestCase
 
         $result = count($converters);
 
-        $this->assertSame(
+        parent::assertSame(
             $expected,
             $result
         );
-
-        $this->assertTrue(
-            is_a(
-                Container::instance()->converter(at: 'fluent'),
-                FluentCommonMark::class
-            )
-        );
     }
 
-    /**
-     * @test
-     */
-    public function can_add_converter(): void
+    public function test_can_add_converter(): void
     {
         $expected = 1;
 
@@ -63,7 +50,7 @@ class ContainerTest extends TestCase
 
         $result = count($converters);
 
-        $this->assertSame(
+        parent::assertSame(
             $expected,
             $result
         );

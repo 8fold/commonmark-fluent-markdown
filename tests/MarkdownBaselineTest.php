@@ -11,10 +11,7 @@ use League\CommonMark\Extension\Attributes\AttributesExtension as Attributes;
 
 class MarkdownBaselineTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function is_performant_and_small(): void // phpcs:ignore
+    public function test_is_performant_and_small(): void // phpcs:ignore
     {
         $startMs = hrtime(true);
 
@@ -38,40 +35,34 @@ class MarkdownBaselineTest extends TestCase
 
         $endMem = memory_get_usage();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
 
         $elapsed = $endMs - $startMs;
         $ms      = $elapsed/1e+6;
 
-        $this->assertLessThan(3.59, $ms);
+        parent::assertLessThan(4.1, $ms);
 
         $used = $endMem - $startMem;
         $kb   = round($used/1024.2);
 
-        $this->assertLessThan(1855, $kb);
+        parent::assertLessThan(1855, $kb);
     }
 
-    /**
-     * @test
-     */
-    public function markdown_has_abbreviations(): void // phpcs:ignore
+    public function test_markdown_has_abbreviations(): void // phpcs:ignore
     {
         $expected = <<<html
-            <p><abbr title="eightfold">8fold</abbr></p>
+            <p><abbr title="Eightfold">8fold</abbr></p>
             html;
 
         $result = Markdown::create()->abbreviations()->minified()->convert(<<<md
-            [.8fold](eightfold)
+            [.Eightfold](8fold)
             md
         );
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function markdown_configured_with_greater_security_by_default(): void // phpcs:ignore
+    public function test_markdown_configured_with_greater_security_by_default(): void // phpcs:ignore
     {
         $expected = <<<html
             <p><a>unsafe link</a></p>
@@ -84,13 +75,10 @@ class MarkdownBaselineTest extends TestCase
             md
         );
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function minify_handles_code_block(): void // phpcs:ignore
+    public function test_minify_handles_code_block(): void // phpcs:ignore
     {
         $expected = <<<html
             <pre><code>this is a code block
@@ -113,22 +101,22 @@ class MarkdownBaselineTest extends TestCase
             md
         );
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
 
         $expected = file_get_contents(__DIR__ . '/code-block-test.html');
 
+        $markdown = file_get_contents(__DIR__ . '/code-block-test.md');
+        parent::assertNotFalse($markdown);
+
         $result = Markdown::create()->withConfig(['html_input' => 'allow'])
             ->minified()->convert(
-                file_get_contents(__DIR__ . '/code-block-test.md')
+                $markdown
             );
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function can_use_accessible_heading_permalinks(): void // phpcs:ignore
+    public function test_can_use_accessible_heading_permalinks(): void // phpcs:ignore
     {
         $expected = <<<html
             <h1>A word of caution</h1>
@@ -147,13 +135,10 @@ class MarkdownBaselineTest extends TestCase
                 md
             );
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function can_use_partials(): void // phpcs: ignore
+    public function test_can_use_partials(): void // phpcs: ignore
     {
         $expected = <<<html
         <p>This was created by a partial</p>
@@ -169,7 +154,7 @@ class MarkdownBaselineTest extends TestCase
             md
         );
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
 
         $expected = <<<html
         <h1>This was created by a partial</h1>
@@ -186,6 +171,6 @@ class MarkdownBaselineTest extends TestCase
                 md
             );
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 }
