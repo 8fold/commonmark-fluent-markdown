@@ -110,9 +110,9 @@ By placing those converters in the Container, they only need to be instantiated 
 
 ```
 Container::instance()->addConverter(
-	Markdown::create()->abbreviations()
+  Markdown::create()->abbreviations()
 )->addConverter(
-	FluentCommonMark::create()->descriptionLists()
+  FluentCommonMark::create()->descriptionLists()
 );
 
 // Returns the Markdown instance (first converter in list)
@@ -192,10 +192,8 @@ Minimal code to start, configure, and render HTML. A consistent API to reduce im
 
 ## Other
 
-- [Code of Conduct](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/CODE_OF_CONDUCT.md)
-- [Contributing](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/CONTRIBUTING.md)
-- [Governance](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/GOVERNANCE.md)
-- [Versioning](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/VERSIONING.md)
-- [Security](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/SECURITY.md)
-- [Coding Standards and Style](https://github.com/8fold/commonmark-fluent-markdown/blob/main/.github/coding-standards-and-styles.md)
-
+- [Code of Conduct](https://github.com/8fold/.github/blob/main/CODE_OF_CONDUCT.md)
+- [Contributing](https://github.com/8fold/.github/blob/main/CONTRIBUTING.md)
+- [Governance](https://github.com/8fold/.github/blob/main/GOVERNANCE.md)
+- [Versioning](https://github.com/8fold/.github/blob/main/docs/versioning-base.md)
+- [Security](https://github.com/8fold/.github/blob/main/SECURITY.md)

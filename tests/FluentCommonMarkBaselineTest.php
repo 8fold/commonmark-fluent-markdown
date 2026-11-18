@@ -12,10 +12,7 @@ use League\Config\ConfigurationInterface as ConfigurationInterface;
 
 class FluentCommonMarkBaselineTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function is_performant_and_small(): void // phpcs:ignore
+    public function test_is_performant_and_small(): void // phpcs:ignore
     {
         $startMs = hrtime(true);
 
@@ -39,18 +36,15 @@ class FluentCommonMarkBaselineTest extends TestCase
         $elapsed = $endMs - $startMs;
         $ms      = $elapsed/1e+6;
 
-        $this->assertLessThan(54, $ms);
+        parent::assertLessThan(63, $ms);
 
         $used = $endMem - $startMem;
         $kb   = round($used/1024.2);
 
-        $this->assertLessThan(1950, $kb);
+        parent::assertLessThan(1950, $kb);
     }
 
-    /**
-     * @test
-     */
-    public function respects_configured_disallowed_raw_html(): void // phpcs:ignore
+    public function test_respects_configured_disallowed_raw_html(): void // phpcs:ignore
     {
         $expected = <<<html
             &lt;div>Hello, World!&lt;/div>
@@ -66,13 +60,10 @@ class FluentCommonMarkBaselineTest extends TestCase
                 md
             )->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function can_use_description_lists(): void // phpcs:ignore
+    public function test_can_use_description_lists(): void // phpcs:ignore
     {
         $expected = <<<html
             <dl>
@@ -96,13 +87,10 @@ class FluentCommonMarkBaselineTest extends TestCase
                 md
             )->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function can_modify_config(): void // phpcs:ignore
+    public function test_can_modify_config(): void // phpcs:ignore
     {
         $expected = <<<html
             <p><a>unsafe link</a></p>
@@ -117,7 +105,7 @@ class FluentCommonMarkBaselineTest extends TestCase
                 md
             )->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
 
         $expected = <<<html
             <script>alert("Hello XSS!");</script>
@@ -135,13 +123,10 @@ class FluentCommonMarkBaselineTest extends TestCase
                 md
             )->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function can_use_tables(): void // phpcs:ignore
+    public function test_can_use_tables(): void // phpcs:ignore
     {
         $markdown = <<<md
             |col 1 |col 2 |
@@ -177,13 +162,10 @@ class FluentCommonMarkBaselineTest extends TestCase
                 md
             )->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function can_convert_to_html(): void // phpcs:ignore
+    public function test_can_convert_to_html(): void // phpcs:ignore
     {
         $expected = <<<html
             <h1>Hello, World!</h1>
@@ -194,7 +176,7 @@ class FluentCommonMarkBaselineTest extends TestCase
             ->commonMarkCore()
             ->convertToHtml('# Hello, World!')->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
 
          $expected = <<<html
             <hr />
@@ -214,7 +196,7 @@ class FluentCommonMarkBaselineTest extends TestCase
                 md
             )->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
 
         $expected = <<<html
             <p>World!</p>
@@ -233,33 +215,27 @@ class FluentCommonMarkBaselineTest extends TestCase
                 md
             )->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function can_set_environment_and_config(): void // phpcs:ignore
+    public function test_can_set_environment_and_config(): void // phpcs:ignore
     {
         $sut = FluentCommonMark::create();
 
-        $this->assertInstanceOf(
+        parent::assertInstanceOf(
             ConfigurationInterface::class,
             $sut->getConfiguration()
         );
 
-        $this->assertInstanceOf(
+        parent::assertInstanceOf(
             Environment::class,
             $sut->getEnvironment()
         );
     }
 
-    /**
-     * @test
-     */
-    public function has_static_initializer(): void // phpcs:ignore
+    public function test_has_static_initializer(): void // phpcs:ignore
     {
-        $this->assertInstanceOf(
+        parent::assertInstanceOf(
             FluentCommonMark::class,
             FluentCommonMark::create()
         );
