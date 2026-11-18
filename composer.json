@@ -21,7 +21,7 @@
 
     "8fold/commonmark-abbreviations": "^3.0",
     "8fold/commonmark-accessible-heading-permalinks": "^1.0",
-    "8fold/commonmark-partials": "^1.0"
+    "8fold/commonmark-partials": "^2.0"
   },
   "require-dev": {
     "symfony/process": "^5.4 || ^6.0 || ^7.0 || ^8.0",
